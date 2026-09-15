@@ -3,6 +3,12 @@
   publish = "dist/book-network-ui"
 
 [[redirects]]
+  from = "/api/*"
+  to = "https://bca-finalyearproject-book-social-network.onrender.com/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
