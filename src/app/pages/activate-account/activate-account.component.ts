@@ -10,6 +10,7 @@ import {AuthenticationService} from '../../services/services/authentication.serv
 export class ActivateAccountComponent {
 
   message = '';
+  registrationMessage = history.state?.registrationMessage ?? '';
   isOkay = true;
   submitted = false;
   constructor(

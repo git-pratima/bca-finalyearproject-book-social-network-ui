@@ -30,8 +30,13 @@ export class RegisterComponent {
       body: this.registerRequest
     })
       .subscribe({
-        next: () => {
-          this.router.navigate(['activate-account']);
+        next: (response) => {
+          const registrationMessage = (response as { status?: { message?: string } })
+            .status?.message;
+
+          this.router.navigate(['activate-account'], {
+            state: { registrationMessage }
+          });
         },
         error: (err) => {
           this.errorMsg = err.error.validationErrors;
