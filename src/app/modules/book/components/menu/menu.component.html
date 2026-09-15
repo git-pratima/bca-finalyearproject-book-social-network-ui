@@ -1,0 +1,92 @@
+<nav class="navbar navbar-expand-xl app-navbar" aria-label="Main navigation">
+  <div class="container-fluid app-navbar__container">
+    <a class="navbar-brand" routerLink="/books" (click)="closeMenu()"><span class="brand-mark"><i class="fa-solid fa-book-open"></i></span><span>Book<span>Circle</span></span></a>
+    <button class="navbar-toggler" type="button" (click)="toggleMenu()" [attr.aria-expanded]="isMenuOpen" aria-controls="navbarSupportedContent" aria-label="Toggle navigation">
+      <i class="fa-solid" [class.fa-bars]="!isMenuOpen" [class.fa-xmark]="isMenuOpen"></i>
+    </button>
+    <div class="navbar-collapse" [class.show]="isMenuOpen" id="navbarSupportedContent">
+      <ul class="navbar-nav app-navbar__links">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/books" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">
+            <i class="fas fa-house"></i><span>Home</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="my-books" routerLinkActive="active" (click)="closeMenu()">
+            <i class="fas fa-book"></i><span>My books</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="my-waiting-list" routerLinkActive="active" (click)="closeMenu()">
+            <i class="fas fa-heart"></i><span>Waiting list</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="my-returned-books" routerLinkActive="active" (click)="closeMenu()">
+            <i class="fa-solid fa-arrow-rotate-left"></i><span>Returns</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="my-borrowed-books" routerLinkActive="active" (click)="closeMenu()">
+            <i class="fas fa-list-check"></i><span>Borrowed</span>
+          </a>
+        </li>
+        <li class="nav-item nav-item--search">
+          <label class="nav-search"><i class="fas fa-search"></i><input type="search" placeholder="Find a book" aria-label="Find a book"></label>
+        </li>
+      </ul>
+      <div class="nav-actions">
+        <div class="user-dropdown" *ngIf="userName" #userDropdown>
+          <button class="user-trigger" type="button" (click)="toggleUserMenu()" [attr.aria-expanded]="isUserMenuOpen" aria-label="Open user menu">
+            <span class="user-avatar">{{ initials }}</span><span class="welcome-copy"><span class="welcome-copy__label">Logged in as</span><strong class="text-capitalize">{{ userName }}</strong></span><i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="user-dropdown__menu" *ngIf="isUserMenuOpen">
+            <button type="button" (click)="openProfileOverview()"><i class="fa-regular fa-user"></i>Profile Overview</button>
+            <button type="button" (click)="openUpdateProfile()"><i class="fa-solid fa-user-pen"></i>Update Profile</button>
+            <button type="button" (click)="openPasswordChange()"><i class="fa-solid fa-key"></i>Change Password</button>
+          </div>
+        </div>
+        <button class="icon-action theme-toggle" type="button" (click)="themeService.toggleTheme()" [attr.aria-label]="themeService.theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'" [title]="themeService.theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'">
+          <i class="fa-solid" [class.fa-sun]="themeService.theme === 'dark'" [class.fa-moon]="themeService.theme !== 'dark'"></i>
+        </button>
+        <button class="icon-action logout-action" type="button" (click)="logout()" aria-label="Log out" title="Log out"><i class="fa-solid fa-right-from-bracket"></i></button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="profile-modal-backdrop" *ngIf="activeDialog" (click)="closeDialog()" role="presentation">
+  <section class="profile-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()" [attr.aria-labelledby]="activeDialog + '-title'">
+    <button class="modal-close" type="button" (click)="closeDialog()" aria-label="Close dialog"><i class="fa-solid fa-xmark"></i></button>
+
+    <ng-container *ngIf="activeDialog === 'overview'">
+      <div class="modal-heading"><span class="modal-icon"><i class="fa-regular fa-id-card"></i></span><div><p>YOUR ACCOUNT</p><h2 id="overview-title">Profile overview</h2></div></div>
+      <div class="modal-loading" *ngIf="isLoadingProfile"><i class="fa-solid fa-spinner fa-spin"></i> Loading your profile…</div>
+      <div class="modal-error" *ngIf="profileError"><i class="fa-solid fa-circle-exclamation"></i>{{ profileError }}</div>
+      <ng-container *ngIf="profile && !isLoadingProfile">
+        <div class="profile-summary"><div class="profile-avatar" [class.has-image]="imagePreview" [style.background-image]="imagePreview ? 'url(' + imagePreview + ')' : null"><span *ngIf="!imagePreview">{{ initials }}</span></div><div><h3>{{ profile.firstName }} {{ profile.lastName }}</h3><p>{{ profile.email }}</p><span>Member since {{ profile.memberSince | date:'MMMM y' }}</span></div></div>
+        <div class="profile-stats"><div><strong>{{ profile.numberOfBooksShared || 0 }}</strong><span>Books shared</span></div><div><strong>{{ profile.numberOfBooksBorrowed || 0 }}</strong><span>Books borrowed</span></div></div>
+        <div class="address-overview"><i class="fa-solid fa-location-dot"></i><div><strong>Address</strong><p *ngIf="profile.address.addressLine1; else noAddress">{{ profile.address.addressLine1 }}<span *ngIf="profile.address.addressLine2">, {{ profile.address.addressLine2 }}</span><br>{{ profile.address.city }}<span *ngIf="profile.address.state">, {{ profile.address.state }}</span><span *ngIf="profile.address.pin"> – {{ profile.address.pin }}</span><span *ngIf="profile.address.country"><br>{{ profile.address.country }}</span></p><ng-template #noAddress><p>No address added yet.</p></ng-template></div></div>
+      </ng-container>
+      <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeDialog()">Close</button><button class="btn-primary" type="button" (click)="openUpdateProfile()">Edit profile</button></div>
+    </ng-container>
+
+    <ng-container *ngIf="activeDialog === 'edit'">
+      <div class="modal-heading"><span class="modal-icon"><i class="fa-solid fa-user-pen"></i></span><div><p>PERSONAL DETAILS</p><h2 id="edit-title">Update profile</h2></div></div>
+      <div class="modal-loading" *ngIf="isLoadingProfile"><i class="fa-solid fa-spinner fa-spin"></i> Loading your profile…</div>
+      <form #profileForm="ngForm" *ngIf="!isLoadingProfile" (ngSubmit)="saveProfile()">
+        <div class="modal-error" *ngIf="profileError"><i class="fa-solid fa-circle-exclamation"></i>{{ profileError }}</div><div class="modal-success" *ngIf="profileSuccess"><i class="fa-solid fa-circle-check"></i>{{ profileSuccess }}</div>
+        <div class="photo-picker"><div class="profile-avatar" [class.has-image]="imagePreview" [style.background-image]="imagePreview ? 'url(' + imagePreview + ')' : null"><span *ngIf="!imagePreview">{{ initials }}</span></div><div><strong>Profile photo</strong><p>JPG, PNG, or WEBP image.</p><label class="upload-button"><i class="fa-solid fa-camera"></i> Choose photo<input type="file" accept="image/png,image/jpeg,image/webp" (change)="onImageSelected($event)"></label></div></div>
+        <div class="form-grid"><label>First name<input class="form-control" name="firstName" [(ngModel)]="editProfile.firstName" required></label><label>Last name<input class="form-control" name="lastName" [(ngModel)]="editProfile.lastName" required></label><label class="full">Email <small>(cannot be changed)</small><input class="form-control" type="email" name="email" [(ngModel)]="editProfile.email" disabled readonly></label></div>
+        <h3 class="form-section-title">Address</h3>
+        <div class="form-grid"><label class="full">Address line 1<input class="form-control" name="addressLine1" [(ngModel)]="editProfile.address.addressLine1"></label><label class="full">Address line 2<input class="form-control" name="addressLine2" [(ngModel)]="editProfile.address.addressLine2"></label><label>Landmark<input class="form-control" name="landmark" [(ngModel)]="editProfile.address.landmark"></label><label>City<input class="form-control" name="city" [(ngModel)]="editProfile.address.city"></label><label>State<input class="form-control" name="state" [(ngModel)]="editProfile.address.state"></label><label>Country<input class="form-control" name="country" [(ngModel)]="editProfile.address.country"></label><label>PIN code<input class="form-control" name="pin" [(ngModel)]="editProfile.address.pin"></label></div>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeDialog()">Cancel</button><button class="btn-primary" type="submit" [disabled]="profileForm.invalid || isSaving">{{ isSaving ? 'Saving…' : 'Save changes' }}</button></div>
+      </form>
+    </ng-container>
+
+    <ng-container *ngIf="activeDialog === 'password'">
+      <div class="modal-heading"><span class="modal-icon"><i class="fa-solid fa-key"></i></span><div><p>ACCOUNT SECURITY</p><h2 id="password-title">Change password</h2></div></div><p class="modal-intro">Choose a strong password that you do not use elsewhere.</p>
+      <form #passwordForm="ngForm" (ngSubmit)="changePassword()"><div class="modal-error" *ngIf="passwordError"><i class="fa-solid fa-circle-exclamation"></i>{{ passwordError }}</div><div class="modal-success" *ngIf="passwordSuccess"><i class="fa-solid fa-circle-check"></i>{{ passwordSuccess }}</div><div class="password-fields"><label>Current password<input class="form-control" type="password" name="oldPassword" [(ngModel)]="password.oldPassword" required autocomplete="current-password"></label><label>New password<input class="form-control" type="password" name="newPassword" [(ngModel)]="password.newPassword" required minlength="8" autocomplete="new-password"></label><label>Confirm new password<input class="form-control" type="password" name="confirmPassword" [(ngModel)]="password.confirmPassword" required autocomplete="new-password"></label></div><div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeDialog()">Cancel</button><button class="btn-primary" type="submit" [disabled]="passwordForm.invalid || isSaving">{{ isSaving ? 'Updating…' : 'Update password' }}</button></div></form>
+    </ng-container>
+  </section>
+</div>

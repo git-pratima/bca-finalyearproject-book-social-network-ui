@@ -1,0 +1,17 @@
+<main class="auth-shell">
+  <section class="auth-story" aria-label="Welcome to BookCircle"><div class="auth-story__overlay"></div><div class="auth-story__content">
+    <a class="brand" routerLink="/login"><span class="brand__mark"><i class="fa-solid fa-book-open"></i></span><span>Book<span>Circle</span></span></a>
+    <div class="auth-story__copy"><p class="eyebrow">YOUR NEXT CHAPTER STARTS HERE</p><h1>A home for every book you love.</h1><p>Build your personal library, share stories with readers nearby, and keep every lending journey beautifully organised.</p></div>
+    <div class="story-note"><i class="fa-solid fa-shield-heart"></i> A thoughtful, trusted community for book lovers</div>
+  </div></section>
+  <section class="auth-panel"><div class="auth-card">
+    <div class="mobile-brand brand"><span class="brand__mark"><i class="fa-solid fa-book-open"></i></span><span>Book<span>Circle</span></span></div>
+    <p class="eyebrow">WELCOME BACK</p><h2>Sign in to your library</h2><p class="auth-intro">Pick up right where your reading life left off.</p>
+    <div class="auth-alert" role="alert" *ngIf="errorMsg.length"><i class="fa-solid fa-circle-exclamation"></i><div><p *ngFor="let msg of errorMsg">{{ msg }}</p></div></div>
+    <form (ngSubmit)="login()" #loginForm="ngForm">
+      <div class="form-field"><label for="login">Email address</label><div class="input-wrap"><i class="fa-regular fa-envelope"></i><input [(ngModel)]="authRequest.email" name="email" type="email" id="login" placeholder="you@example.com" autocomplete="email" required></div></div>
+      <div class="form-field"><label for="password">Password</label><div class="input-wrap"><i class="fa-solid fa-lock"></i><input [(ngModel)]="authRequest.password" name="password" [type]="showPassword ? 'text' : 'password'" id="password" placeholder="Enter your password" autocomplete="current-password" required><button class="password-toggle" type="button" (click)="showPassword = !showPassword" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"><i [class]="showPassword ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye'"></i></button></div></div>
+      <button type="submit" class="auth-submit" [disabled]="loginForm.invalid">Sign in <i class="fa-solid fa-arrow-right"></i></button>
+    </form><p class="auth-switch">New to BookCircle? <button type="button" (click)="register()">Create a free account</button></p>
+  </div></section>
+</main>

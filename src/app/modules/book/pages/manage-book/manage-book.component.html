@@ -1,0 +1,66 @@
+<section class="book-editor-page p-2">
+  <header class="book-editor-page__header"><div><p class="book-editor-page__eyebrow"><i class="fa-solid fa-book-medical"></i> {{ isEditMode ? 'UPDATE LISTING' : 'ADD TO YOUR LIBRARY' }}</p><h2>{{ isEditMode ? 'Update book details' : 'Add a new book' }}</h2><p>{{ isEditMode ? 'Keep the book and pickup information accurate for readers.' : 'Add your book details and tell readers where they can collect it.' }}</p></div><a routerLink="/books/my-books" class="book-editor-page__back"><i class="fa-solid fa-arrow-left"></i> Back to my books</a></header>
+  <div class="alert alert-danger mt-2" role="alert" *ngIf="errorMsg.length">
+    <p class="p-0 m-0" *ngFor="let msg of errorMsg">{{msg}}</p>
+  </div>
+  <div class="book-editor">
+    <div class="book-editor__cover">
+      <img class="rounded-1" [src]=" selectedPicture || 'https://source.unsplash.com/user/c_v_r/1900x800'" alt="Book cover preview">
+      <div class="mt-2">
+        <input
+          (change)="onFileSelected($event)"
+          class="form-control"
+          type="file"
+          id="formFile"
+          accept="image/*"
+        >
+      </div>
+    </div>
+    <div class="book-editor__form">
+      <form class="row g-3" (ngSubmit)="saveBook()" #bookForm="ngForm">
+        <div class="book-form-section col-12"><div class="book-form-section__title"><span><i class="fa-solid fa-book"></i></span><div><h3>Book information</h3><p>Details readers will see in the library.</p></div></div></div>
+        <div class="col-12">
+          <label for="title" class="form-label">Title</label>
+          <input [(ngModel)]="bookRequest.title" type="text" class="form-control" id="title" name="title" placeholder="e.g. Concepts of Physics" required>
+        </div>
+        <div class="col-md-6">
+          <label for="author" class="form-label">Author name</label>
+          <input [(ngModel)]="bookRequest.authorName" type="text" class="form-control" id="author" name="author" placeholder="e.g. H. C. Verma" required>
+        </div>
+        <div class="col-md-6">
+          <label for="isbn" class="form-label">ISBN</label>
+          <input [(ngModel)]="bookRequest.isbn" type="text" class="form-control" id="isbn" name="isbn">
+        </div>
+        <div class="col-12">
+          <label for="synopsis" class="form-label">Synopsis</label>
+          <textarea [(ngModel)]="bookRequest.synopsis" rows="3" class="form-control" id="synopsis" name="synopsis" placeholder="Tell readers what this book is about" required></textarea>
+        </div>
+        <div class="book-form-section col-12"><div class="book-form-section__title"><span><i class="fa-solid fa-location-dot"></i></span><div><h3>Pickup details</h3><p>Share a clear collection point and address with borrowers.</p></div></div></div>
+        <div class="col-md-6"><label for="pickupLocation" class="form-label">Pickup location</label><input [(ngModel)]="bookRequest.pickUpLocation" type="text" class="form-control" id="pickupLocation" name="pickupLocation" placeholder="e.g. Vaibhava Convention Hall" required></div>
+        <div class="col-md-6"><label for="landmark" class="form-label">Landmark</label><input [(ngModel)]="bookRequest.bookAddress!.landmark" type="text" class="form-control" id="landmark" name="landmark" placeholder="e.g. Beside the convention hall"></div>
+        <div class="col-12"><label for="addressLine1" class="form-label">Address line 1</label><input [(ngModel)]="bookRequest.bookAddress!.addressLine1" type="text" class="form-control" id="addressLine1" name="addressLine1" placeholder="House, flat, building, or street" required></div>
+        <div class="col-12"><label for="addressLine2" class="form-label">Address line 2 <span class="form-optional">Optional</span></label><input [(ngModel)]="bookRequest.bookAddress!.addressLine2" type="text" class="form-control" id="addressLine2" name="addressLine2" placeholder="Area, road, or locality"></div>
+        <div class="col-md-4"><label for="city" class="form-label">City</label><input [(ngModel)]="bookRequest.bookAddress!.city" type="text" class="form-control" id="city" name="city" placeholder="Bengaluru" required></div>
+        <div class="col-md-4"><label for="state" class="form-label">State</label><input [(ngModel)]="bookRequest.bookAddress!.state" type="text" class="form-control" id="state" name="state" placeholder="Karnataka" required></div>
+        <div class="col-md-2"><label for="country" class="form-label">Country</label><input [(ngModel)]="bookRequest.bookAddress!.country" type="text" class="form-control" id="country" name="country" required></div>
+        <div class="col-md-2"><label for="pin" class="form-label">PIN code</label><input [(ngModel)]="bookRequest.bookAddress!.pin" type="text" inputmode="numeric" class="form-control" id="pin" name="pin" placeholder="560100" required></div>
+        <div class="col-12"><label for="pickupInstructions" class="form-label">Pickup instructions <span class="form-optional">Optional</span></label><textarea [(ngModel)]="bookRequest.pickupInstructions" rows="3" class="form-control" id="pickupInstructions" name="pickupInstructions" placeholder="Helpful directions, preferred pickup time, or contact instructions"></textarea></div>
+        <div class="col-12">
+          <div class="form-check">
+            <input [(ngModel)]="bookRequest.shareable" class="form-check-input" type="checkbox" id="gridCheck"
+                   name="shareable">
+            <label class="form-check-label" for="gridCheck"><strong>Make this book available to borrow</strong><small>Readers can request this book while it is marked available.</small></label>
+          </div>
+        </div>
+        <div class="d-flex justify-content-end gap-2 col-12">
+          <button type="submit" class="btn btn-primary" [disabled]="bookForm.invalid">
+            <i class="fas fa-save"></i>&nbsp;{{ isEditMode ? 'Save changes' : 'Add book' }}
+          </button>
+          <a routerLink="/books/my-books" type="submit" class="btn btn-link btn text-danger">
+            <i class="fas fa-times"></i>&nbsp;Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
