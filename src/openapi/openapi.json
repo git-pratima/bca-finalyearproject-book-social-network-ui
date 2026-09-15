@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "OpenApi specification - Pratima BCA Final Year Project",
-    "description": "OpenApi documentation for Spring Security",
+    "title": "Book Social Network - Pratima BCA Final Year Project",
+    "description": "Spring Springboot",
     "termsOfService": "Terms of service",
     "contact": {
       "name": "Pratima Kumari",
@@ -21,7 +21,7 @@
       "description": "Local ENV"
     },
     {
-      "url": "http://localhost:8088",
+      "url": "https://bca-finalyearproject-book-social-network.onrender.com",
       "description": "PROD ENV"
     }
   ],

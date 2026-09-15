@@ -1,5 +1,16 @@
 # BookNetworkUi
 
+## Deploying to Netlify
+
+This repository is ready to deploy as a Netlify site. Import the Git repository in Netlify; it will read `netlify.toml` and run `npm run build`, publishing `dist/book-network-ui`.
+
+API URLs are selected at build time:
+
+- `npm start` / development builds use `http://localhost:8088`.
+- Netlify production builds use `https://bca-finalyearproject-book-social-network.onrender.com`.
+
+The Render backend must allow the deployed Netlify site origin in its CORS configuration (for example, `https://your-site-name.netlify.app`).
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.1.4.
 
 ## Development server
