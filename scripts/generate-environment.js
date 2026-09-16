@@ -8,13 +8,15 @@ if (!isProduction && target !== 'development') {
   throw new Error('Usage: node scripts/generate-environment.js <development|production>');
 }
 
-const googleClientId = process.env.GOOGLE_CLIENT_ID || '';
+const googleClientId = process.env.GOOGLE_CLIENT_ID
+  || '345492205775-tqsuvfopjpm3dldffpboipqjpebo7bqm.apps.googleusercontent.com';
 
 if (isProduction && !googleClientId) {
   throw new Error('GOOGLE_CLIENT_ID must be set for a production build.');
 }
 
 const environmentsDirectory = path.join(__dirname, '..', 'src', 'environments');
+fs.mkdirSync(environmentsDirectory, { recursive: true });
 
 function writeEnvironment(filename, production, apiUrl) {
   const environment = `export const environment = {
