@@ -1,4 +1,4 @@
-# BookNetworkUi
+# Book Social Network
 
 ## Deploying to Netlify
 

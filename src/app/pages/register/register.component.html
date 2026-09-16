@@ -1,11 +1,11 @@
 <main class="auth-shell">
-  <section class="auth-story" aria-label="Join BookCircle"><div class="auth-story__overlay"></div><div class="auth-story__content">
-    <a class="brand" routerLink="/login"><span class="brand__mark"><i class="fa-solid fa-book-open"></i></span><span>Book<span>Circle</span></span></a>
+  <section class="auth-story" aria-label="Join Book Social Network"><div class="auth-story__overlay"></div><div class="auth-story__content">
+    <a class="brand" routerLink="/login"><span class="brand__mark"><i class="fa-solid fa-book-open"></i></span><span>Book Social <span>Network</span></span></a>
     <div class="auth-story__copy"><p class="eyebrow">MORE THAN A BOOKSHELF</p><h1>Let great stories travel further.</h1><p>Keep your collection close, discover what fellow readers are sharing, and give books another life.</p></div>
     <ul class="benefit-list"><li><i class="fa-solid fa-check"></i> Organise your personal collection</li><li><i class="fa-solid fa-check"></i> Borrow and share with confidence</li><li><i class="fa-solid fa-check"></i> Join a community built around books</li></ul>
   </div></section>
   <section class="auth-panel"><div class="auth-card auth-card--register">
-    <div class="mobile-brand brand"><span class="brand__mark"><i class="fa-solid fa-book-open"></i></span><span>Book<span>Circle</span></span></div>
+    <div class="mobile-brand brand"><span class="brand__mark"><i class="fa-solid fa-book-open"></i></span><span>Book Social <span>Network</span></span></div>
     <p class="eyebrow">JOIN THE COMMUNITY</p><h2>Create your reader profile</h2><p class="auth-intro">It takes less than a minute to begin building your library.</p>
     <div class="auth-alert" role="alert" *ngIf="errorMsg.length"><i class="fa-solid fa-circle-exclamation"></i><div><p *ngFor="let msg of errorMsg">{{ msg }}</p></div></div>
     <form (ngSubmit)="register()" #registerForm="ngForm">
@@ -13,6 +13,6 @@
       <div class="form-field"><label for="email">Email address</label><div class="input-wrap"><i class="fa-regular fa-envelope"></i><input [(ngModel)]="registerRequest.email" name="email" type="email" id="email" placeholder="you@example.com" autocomplete="email" required></div></div>
       <div class="form-field"><label for="password">Create a password</label><div class="input-wrap"><i class="fa-solid fa-lock"></i><input [(ngModel)]="registerRequest.password" name="password" [type]="showPassword ? 'text' : 'password'" id="password" placeholder="At least 8 characters" autocomplete="new-password" required minlength="8"><button class="password-toggle" type="button" (click)="showPassword = !showPassword" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"><i [class]="showPassword ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye'"></i></button></div><small>Use 8 or more characters for a stronger account.</small></div>
       <button type="submit" class="auth-submit" [disabled]="registerForm.invalid">Create my account <i class="fa-solid fa-arrow-right"></i></button>
-    </form><p class="terms-note">By creating an account, you agree to use BookCircle respectfully and keep your lending details accurate.</p><p class="auth-switch">Already a member? <button type="button" (click)="login()">Sign in instead</button></p>
+    </form><p class="terms-note">By creating an account, you agree to use Book Social Network respectfully and keep your lending details accurate.</p><p class="auth-switch">Already a member? <button type="button" (click)="login()">Sign in instead</button></p>
   </div></section>
 </main>
