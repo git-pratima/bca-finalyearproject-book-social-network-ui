@@ -29,3 +29,9 @@ img { max-width:100%; } .alert, td, th, p { overflow-wrap:anywhere; } .paginatio
 .activation-notice { display:flex; gap:8px; margin:20px auto 0; padding:12px 14px; max-width:400px; border:1px solid #b9dcd5; border-radius:10px; color:#275f58; background:#edf7f4; font-size:.84rem; line-height:1.5; text-align:left; }.activation-notice i { margin-top:3px; color:var(--forest); }
 
 .auth-divider { display:flex; align-items:center; gap:12px; margin:22px 0 18px; color:#8a979e; font-size:.78rem; text-transform:uppercase; }.auth-divider::before, .auth-divider::after { content:''; flex:1; height:1px; background:var(--line); }.google-sign-in { display:flex; justify-content:center; min-height:40px; }.google-config-note { margin:0; color:#8a979e; font-size:.78rem; text-align:center; }
+
+/* Global feedback for all in-flight API requests. */
+.app-loading-overlay { position:fixed; z-index:2000; inset:0; display:grid; place-items:center; padding:20px; background:rgba(13,28,38,.32); cursor:wait; }
+.app-loading-indicator { display:flex; align-items:center; gap:12px; min-width:150px; padding:15px 19px; border:1px solid var(--app-border); border-radius:12px; color:var(--app-text); background:var(--app-surface); box-shadow:0 14px 34px rgba(0,0,0,.18); font-size:.94rem; font-weight:700; }
+.app-loading-spinner { width:21px; height:21px; flex:0 0 21px; border:3px solid color-mix(in srgb,var(--app-accent) 25%,transparent); border-top-color:var(--app-accent); border-radius:50%; animation:app-loading-spin .75s linear infinite; }
+@keyframes app-loading-spin { to { transform:rotate(360deg); } }

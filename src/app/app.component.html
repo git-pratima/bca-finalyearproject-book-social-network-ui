@@ -1,1 +1,8 @@
 <router-outlet></router-outlet>
+
+<div class="app-loading-overlay" *ngIf="loading$ | async" role="status" aria-live="polite" aria-label="Loading">
+  <div class="app-loading-indicator">
+    <span class="app-loading-spinner" aria-hidden="true"></span>
+    <span>Loading...</span>
+  </div>
+</div>

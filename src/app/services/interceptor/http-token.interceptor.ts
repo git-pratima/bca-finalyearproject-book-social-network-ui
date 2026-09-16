@@ -5,17 +5,20 @@ import {
   HttpEvent,
   HttpInterceptor, HttpHeaders
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { finalize, Observable } from 'rxjs';
 import {TokenService} from '../token/token.service';
+import { LoadingService } from '../loading/loading.service';
 
 @Injectable()
 export class HttpTokenInterceptor implements HttpInterceptor {
 
   constructor(
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private loadingService: LoadingService
   ) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    this.loadingService.start();
     const token = this.tokenService.token;
     if (token) {
       const authReq = request.clone({
@@ -23,8 +26,8 @@ export class HttpTokenInterceptor implements HttpInterceptor {
           Authorization: 'Bearer ' + token
         })
       });
-      return next.handle(authReq);
+      return next.handle(authReq).pipe(finalize(() => this.loadingService.stop()));
     }
-    return next.handle(request);
+    return next.handle(request).pipe(finalize(() => this.loadingService.stop()));
   }
 }
