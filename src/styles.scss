@@ -27,3 +27,5 @@ img { max-width:100%; } .alert, td, th, p { overflow-wrap:anywhere; } .paginatio
 @media (max-width:575px) { body { font-size:15px; }.btn { min-height:40px; }.form-control, .form-select { min-height:42px; }.alert { margin-bottom:1rem; }.pagination { justify-content:flex-start; }.pagination::-webkit-scrollbar { height:4px; }.pagination::-webkit-scrollbar-thumb { background:var(--app-border); border-radius:99px; } }
 
 .activation-notice { display:flex; gap:8px; margin:20px auto 0; padding:12px 14px; max-width:400px; border:1px solid #b9dcd5; border-radius:10px; color:#275f58; background:#edf7f4; font-size:.84rem; line-height:1.5; text-align:left; }.activation-notice i { margin-top:3px; color:var(--forest); }
+
+.auth-divider { display:flex; align-items:center; gap:12px; margin:22px 0 18px; color:#8a979e; font-size:.78rem; text-transform:uppercase; }.auth-divider::before, .auth-divider::after { content:''; flex:1; height:1px; background:var(--line); }.google-sign-in { display:flex; justify-content:center; min-height:40px; }.google-config-note { margin:0; color:#8a979e; font-size:.78rem; text-align:center; }

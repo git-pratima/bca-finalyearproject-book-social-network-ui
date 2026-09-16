@@ -7,6 +7,10 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "prestart": "node scripts/generate-environment.js development",
+    "prebuild": "node scripts/generate-environment.js production",
+    "prewatch": "node scripts/generate-environment.js development",
+    "pretest": "node scripts/generate-environment.js development",
     "api-gen": "ng-openapi-gen --input ./src/openapi/openapi.json --output ./src/app/services"
   },
   "private": true,
