@@ -14,19 +14,21 @@ if (isProduction && !googleClientId) {
   throw new Error('GOOGLE_CLIENT_ID must be set for a production build.');
 }
 
-const environment = `export const environment = {
-  production: ${isProduction},
-  apiUrl: ${JSON.stringify(isProduction ? '/api' : 'http://localhost:8088')},
+const environmentsDirectory = path.join(__dirname, '..', 'src', 'environments');
+
+function writeEnvironment(filename, production, apiUrl) {
+  const environment = `export const environment = {
+  production: ${production},
+  apiUrl: ${JSON.stringify(apiUrl)},
   googleClientId: ${JSON.stringify(googleClientId)}
 };
 `;
+  fs.writeFileSync(path.join(environmentsDirectory, filename), environment, 'utf8');
+}
 
-const output = path.join(
-  __dirname,
-  '..',
-  'src',
-  'environments',
-  isProduction ? 'environment.prod.ts' : 'environment.ts'
-);
+// Angular validates the replacement source file even for production builds.
+writeEnvironment('environment.ts', false, 'http://localhost:8088');
 
-fs.writeFileSync(output, environment, 'utf8');
+if (isProduction) {
+  writeEnvironment('environment.prod.ts', true, '/api');
+}
