@@ -850,11 +850,19 @@
             "type": "string"
           },
           "cover": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "byte"
-            }
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uri"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            ]
           },
           "rate": {
             "type": "number",

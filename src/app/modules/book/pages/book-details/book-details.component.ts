@@ -4,6 +4,7 @@ import {BookService} from '../../../../services/services/book.service';
 import {ActivatedRoute} from '@angular/router';
 import {FeedbackService} from '../../../../services/services/feedback.service';
 import {PageResponseFeedbackResponse} from '../../../../services/models/page-response-feedback-response';
+import { resolveBookCover } from '../../utils/book-cover';
 
 @Component({
   selector: 'app-book-details',
@@ -19,6 +20,7 @@ export class BookDetailsComponent implements OnInit {
   message = '';
   messageType: 'success' | 'error' = 'success';
   isBorrowing = false;
+  coverFailed = false;
   private bookId = 0;
 
   constructor(
@@ -35,6 +37,7 @@ export class BookDetailsComponent implements OnInit {
       }).subscribe({
         next: (book) => {
           this.book = book;
+          this.coverFailed = false;
           this.findAllFeedbacks();
         }
       });
@@ -99,13 +102,12 @@ export class BookDetailsComponent implements OnInit {
       .filter((line): line is string => !!line);
   }
 
-  get coverSrc(): string {
-    const cover = this.book.cover as unknown as string | string[] | undefined;
-    const coverValue = Array.isArray(cover) ? cover[0] : cover;
-    if (!coverValue) {
-      return 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=600&q=80';
-    }
-    return coverValue.startsWith('data:') ? coverValue : `data:image/webp;base64,${coverValue}`;
+  get coverSrc(): string | undefined {
+    return this.coverFailed ? undefined : resolveBookCover(this.book);
+  }
+
+  onCoverError(): void {
+    this.coverFailed = true;
   }
 
   borrowBook(): void {

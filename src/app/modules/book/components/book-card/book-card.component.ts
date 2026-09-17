@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {BookResponse} from '../../../../services/models/book-response';
+import { resolveBookCover } from '../../utils/book-cover';
 
 @Component({
   selector: 'app-book-card',
@@ -10,13 +11,10 @@ export class BookCardComponent {
   private _book: BookResponse = {};
   private _manage = false;
   private _discover = false;
-  private _bookCover: string | undefined;
+  private coverFailed = false;
 
   get bookCover(): string | undefined {
-    if (this._book.cover) {
-      return 'data:image/jpg;base64,' + this._book.cover
-    }
-    return 'https://source.unsplash.com/user/c_v_r/1900x800';
+    return this.coverFailed ? undefined : resolveBookCover(this._book);
   }
 
   get book(): BookResponse {
@@ -26,6 +24,11 @@ export class BookCardComponent {
   @Input()
   set book(value: BookResponse) {
     this._book = value;
+    this.coverFailed = false;
+  }
+
+  onCoverError(): void {
+    this.coverFailed = true;
   }
 
 

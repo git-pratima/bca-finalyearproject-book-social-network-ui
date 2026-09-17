@@ -3,6 +3,7 @@ import {BookRequest} from '../../../../services/models/book-request';
 import {BookService} from '../../../../services/services/book.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BookAddress} from '../../../../services/models/book-address';
+import { resolveBookCover } from '../../utils/book-cover';
 
 @Component({
   selector: 'app-manage-book',
@@ -50,7 +51,7 @@ export class ManageBookComponent implements OnInit {
            pickUpLocation: book.pickUpLocation || '',
            pickupInstructions: book.pickupInstructions || ''
          };
-         this.selectedPicture = book.cover ? 'data:image/jpg;base64,' + book.cover : undefined;
+         this.selectedPicture = resolveBookCover(book);
         }
       });
     }

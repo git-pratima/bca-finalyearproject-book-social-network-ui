@@ -6,7 +6,7 @@ export interface BookResponse {
   archived?: boolean;
   authorName?: string;
   bookAddress?: BookAddress;
-  cover?: Array<string>;
+  cover?: (string | Array<string>);
   id?: number;
   isbn?: string;
   owner?: string;

@@ -1,13 +1,18 @@
 <div class="card book-card" [class.book-card-discover]="discover" [class.book-card-manage]="manage" [class.border-success]="book.shareable && !discover" [class.border-warning]="book.archived && !discover">
-  <div class="book-card-discover__image" *ngIf="discover"><img [src]="bookCover" [alt]="book.title || 'Book cover'" loading="lazy"><span *ngIf="book.shareable"><i class="fa-solid fa-check"></i> Available</span></div>
-  <img *ngIf="!discover" [src]="bookCover" class="card-img-top" [alt]="book.title || 'Book cover'">
+  <div class="book-card-discover__image" *ngIf="discover"><img *ngIf="bookCover; else discoverCoverPlaceholder" [src]="bookCover" [alt]="book.title || 'Book cover'" loading="lazy" (error)="onCoverError()"><ng-template #discoverCoverPlaceholder><div class="book-cover-placeholder"><i class="fa-solid fa-book-open"></i><span>No cover available</span></div></ng-template><span *ngIf="book.shareable"><i class="fa-solid fa-check"></i> Available</span></div>
+  <ng-container *ngIf="!discover"><img *ngIf="bookCover; else manageCoverPlaceholder" [src]="bookCover" class="card-img-top" [alt]="book.title || 'Book cover'" (error)="onCoverError()"><ng-template #manageCoverPlaceholder><div class="book-cover-placeholder book-cover-placeholder--card"><i class="fa-solid fa-book-open"></i><span>No cover available</span></div></ng-template></ng-container>
   <div class="card-body book-card__body">
-    <p class="book-card-discover__label" *ngIf="discover">{{ book.owner ? 'SHARED BY ' + book.owner : 'COMMUNITY BOOK' }}</p>
-    <h5 class="card-title book-card__title fs-6 fw-bold mb-1"><i class="fa-solid fa-book"></i>&nbsp;{{book.title}}</h5>
-    <h5 class="card-subtitle fs-6 text-secondary mb-1"><i class="fa-solid fa-user-check"></i>&nbsp;{{ book.authorName }}</h5>
-    <h6 class="card-subtitle fs-6 text-secondary mb-1"><i class="fas fa-code"></i>&nbsp;{{ book.isbn }}</h6>
-    <h6 class="card-subtitle fs-6 text-secondary" *ngIf="!discover"><i class="fas fa-user"></i>&nbsp;{{ book.owner }}</h6>
-    <hr><p class="card-text">{{book.synopsis}}</p>
+    <ng-container *ngIf="manage; else standardBookDetails">
+      <p class="book-card__eyebrow">YOUR BOOK</p>
+      <h5 class="card-title book-card__title">{{ book.title }}</h5>
+      <div class="book-card__tiles" aria-label="Book details">
+        <div class="book-card__tile"><i class="fa-solid fa-pen-nib"></i><span>Author</span><strong>{{ book.authorName || 'Not provided' }}</strong></div>
+        <div class="book-card__tile"><i class="fa-solid fa-barcode"></i><span>ISBN</span><strong>{{ book.isbn || 'Not provided' }}</strong></div>
+        <div class="book-card__tile book-card__tile--wide"><i class="fa-solid fa-user"></i><span>Owner</span><strong>{{ book.owner || 'You' }}</strong></div>
+      </div>
+      <p class="card-text book-card__synopsis">{{ book.synopsis || 'No description has been added yet.' }}</p>
+    </ng-container>
+    <ng-template #standardBookDetails><p class="book-card-discover__label" *ngIf="discover">{{ book.owner ? 'SHARED BY ' + book.owner : 'COMMUNITY BOOK' }}</p><h5 class="card-title book-card__title fs-6 fw-bold mb-1"><i class="fa-solid fa-book"></i>&nbsp;{{book.title}}</h5><h5 class="card-subtitle fs-6 text-secondary mb-1"><i class="fa-solid fa-user-check"></i>&nbsp;{{ book.authorName }}</h5><h6 class="card-subtitle fs-6 text-secondary mb-1"><i class="fas fa-code"></i>&nbsp;{{ book.isbn }}</h6><h6 class="card-subtitle fs-6 text-secondary" *ngIf="!discover"><i class="fas fa-user"></i>&nbsp;{{ book.owner }}</h6><hr><p class="card-text">{{book.synopsis}}</p></ng-template>
   </div>
   <div class="card-footer book-card__footer d-flex gap-2 justify-content-between align-items-center"><div class="d-flex gap-2"><app-rating [rating]="book.rate || 0"></app-rating><span class="fw-bold" *ngIf="book.rate || 0 > 0">{{book.rate}}</span></div><div class="d-flex gap-2" *ngIf="!manage && !discover"><i (click)="onShowDetails()" class="fas fa-circle-info text-primary" title="Book details"></i><i (click)="onBorrow()" class="fas fa-list-check text-primary" title="Borrow book"></i><i (click)="onAddToWaitingList()" class="fas fa-heart text-danger" title="Add to waiting list"></i></div><div class="book-card-discover__actions" *ngIf="!manage && discover"><button type="button" class="book-card-discover__details" (click)="onShowDetails()">Details</button><button type="button" class="book-card-discover__borrow" (click)="onBorrow()">Borrow <i class="fa-solid fa-arrow-right"></i></button></div><div class="book-card__manage-actions" *ngIf="manage"><button type="button" (click)="onEdit()" title="Edit book"><i class="fas fa-pen"></i><span>Edit</span></button><button type="button" (click)="onShare()" title="Change sharing status"><i class="fas fa-share-nodes"></i><span>Share</span></button><button type="button" class="book-card__archive" (click)="onArchive()" title="Archive book"><i class="fas fa-box-archive"></i></button></div></div>
 </div>

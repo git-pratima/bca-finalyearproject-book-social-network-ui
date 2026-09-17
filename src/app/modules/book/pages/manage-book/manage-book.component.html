@@ -5,7 +5,8 @@
   </div>
   <div class="book-editor">
     <div class="book-editor__cover">
-      <img class="rounded-1" [src]=" selectedPicture || 'https://source.unsplash.com/user/c_v_r/1900x800'" alt="Book cover preview">
+      <img *ngIf="selectedPicture; else coverPlaceholder" class="rounded-1" [src]="selectedPicture" alt="Book cover preview" (error)="selectedPicture = undefined">
+      <ng-template #coverPlaceholder><div class="book-editor__cover-placeholder"><i class="fa-solid fa-book-open"></i><span>No cover selected</span></div></ng-template>
       <div class="mt-2">
         <input
           (change)="onFileSelected($event)"
