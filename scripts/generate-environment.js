@@ -29,7 +29,7 @@ function writeEnvironment(filename, production, apiUrl) {
 }
 
 // Angular validates the replacement source file even for production builds.
-writeEnvironment('environment.ts', false, 'http://localhost:8088');
+writeEnvironment('environment.ts', false, '/api');
 
 if (isProduction) {
   writeEnvironment('environment.prod.ts', true, '/api');

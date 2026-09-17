@@ -74,7 +74,8 @@
               "browserTarget": "book-network-ui:build:production"
             },
             "development": {
-              "browserTarget": "book-network-ui:build:development"
+              "browserTarget": "book-network-ui:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

@@ -6,7 +6,7 @@ This repository is ready to deploy as a Netlify site. Import the Git repository 
 
 API URLs are selected at build time:
 
-- `npm start` / development builds use `http://localhost:8088`.
+- `npm start` / development builds use `/api`; Angular proxies it to `http://localhost:8088`.
 - Netlify production builds use the same-origin `/api` path, which Netlify proxies to `https://bca-finalyearproject-book-social-network.onrender.com`.
 
 The Netlify proxy avoids browser CORS restrictions. It is still good practice to add the deployed Netlify site origin (for example, `https://your-site-name.netlify.app`) to the Render backend CORS configuration for any direct API clients.
