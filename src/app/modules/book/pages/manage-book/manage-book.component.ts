@@ -75,6 +75,11 @@ export class ManageBookComponent implements OnInit {
         }).subscribe({
           next: () => {
             this.router.navigate(['/books/my-books']);
+          },
+          error: (err) => {
+            this.errorMsg = err.status === 403
+              ? ['Your session is no longer authorized to upload this cover. Please sign in again and retry.']
+              : [err.error?.errorMsg || 'Unable to upload the book cover. Please try again.'];
           }
         });
       },

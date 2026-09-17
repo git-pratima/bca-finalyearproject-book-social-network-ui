@@ -3,7 +3,7 @@ import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpInterceptor, HttpHeaders
+  HttpInterceptor
 } from '@angular/common/http';
 import { finalize, Observable } from 'rxjs';
 import {TokenService} from '../token/token.service';
@@ -22,9 +22,9 @@ export class HttpTokenInterceptor implements HttpInterceptor {
     const token = this.tokenService.token;
     if (token) {
       const authReq = request.clone({
-        headers: new HttpHeaders({
-          Authorization: 'Bearer ' + token
-        })
+        setHeaders: {
+          Authorization: `Bearer ${token}`
+        }
       });
       return next.handle(authReq).pipe(finalize(() => this.loadingService.stop()));
     }
