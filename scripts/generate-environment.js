@@ -32,5 +32,5 @@ function writeEnvironment(filename, production, apiUrl) {
 writeEnvironment('environment.ts', false, 'http://localhost:8088');
 
 if (isProduction) {
-  writeEnvironment('environment.prod.ts', true, 'https://bca-finalyearproject-book-social-network.onrender.com');
+  writeEnvironment('environment.prod.ts', true, '/api');
 }
