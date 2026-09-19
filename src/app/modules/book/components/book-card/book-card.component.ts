@@ -54,7 +54,7 @@ export class BookCardComponent {
   @Output() private archive: EventEmitter<BookResponse> = new EventEmitter<BookResponse>();
   @Output() private addToWaitingList: EventEmitter<BookResponse> = new EventEmitter<BookResponse>();
   @Output() private borrow: EventEmitter<BookResponse> = new EventEmitter<BookResponse>();
-  @Output() private edit: EventEmitter<BookResponse> = new EventEmitter<BookResponse>();
+  @Output() edit: EventEmitter<BookResponse> = new EventEmitter<BookResponse>();
   @Output() private details: EventEmitter<BookResponse> = new EventEmitter<BookResponse>();
 
   onShare() {
