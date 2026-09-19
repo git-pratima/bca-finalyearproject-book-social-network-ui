@@ -10,6 +10,13 @@ export class TokenService {
     localStorage.setItem('token', token);
   }
 
+  clear(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userEmail');
+  }
+
   get token() {
     return localStorage.getItem('token') as string;
   }
@@ -24,7 +31,7 @@ export class TokenService {
     // check expiry date
     const isTokenExpired = jwtHelper.isTokenExpired(token);
     if (isTokenExpired) {
-      localStorage.clear();
+      this.clear();
       return false;
     }
     return true;
