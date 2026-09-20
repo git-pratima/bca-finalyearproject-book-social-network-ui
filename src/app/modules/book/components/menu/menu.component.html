@@ -59,6 +59,7 @@
     </div>
   </div>
 </nav>
+<div class="sidebar-backdrop" *ngIf="isMenuOpen" (click)="closeMenu()" role="presentation"></div>
 
 <div class="profile-modal-backdrop" *ngIf="activeDialog" (click)="closeDialog()" role="presentation">
   <section class="profile-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()" [attr.aria-labelledby]="activeDialog + '-title'">
