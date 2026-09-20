@@ -24,6 +24,8 @@ import { findAllBorrowedBooks } from '../fn/book/find-all-borrowed-books';
 import { FindAllBorrowedBooks$Params } from '../fn/book/find-all-borrowed-books';
 import { findAllBorrowRequests } from '../fn/book/find-all-borrow-requests';
 import { FindAllBorrowRequests$Params, BorrowRequestListResponse } from '../fn/book/find-all-borrow-requests';
+import { findAllBorrowedRequests } from '../fn/book/find-all-borrowed-requests';
+import { FindAllBorrowedRequests$Params } from '../fn/book/find-all-borrowed-requests';
 import { findAllReturnedBooks } from '../fn/book/find-all-returned-books';
 import { FindAllReturnedBooks$Params } from '../fn/book/find-all-returned-books';
 import { findBookById } from '../fn/book/find-book-by-id';
@@ -82,6 +84,16 @@ export class BookService extends BaseService {
 
   findAllBorrowRequests(params?: FindAllBorrowRequests$Params, context?: HttpContext): Observable<PageResponseBorrowRequestResponse> {
     return this.findAllBorrowRequests$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BorrowRequestListResponse>): PageResponseBorrowRequestResponse => r.body.data || {})
+    );
+  }
+
+  findAllBorrowedRequests$Response(params?: FindAllBorrowedRequests$Params, context?: HttpContext): Observable<StrictHttpResponse<BorrowRequestListResponse>> {
+    return findAllBorrowedRequests(this.http, this.rootUrl, params, context);
+  }
+
+  findAllBorrowedRequests(params?: FindAllBorrowedRequests$Params, context?: HttpContext): Observable<PageResponseBorrowRequestResponse> {
+    return this.findAllBorrowedRequests$Response(params, context).pipe(
       map((r: StrictHttpResponse<BorrowRequestListResponse>): PageResponseBorrowRequestResponse => r.body.data || {})
     );
   }

@@ -7,12 +7,12 @@ import {Router} from '@angular/router';
 @Component({
   selector: 'app-book-list',
   templateUrl: './book-list.component.html',
-  styleUrls: ['./book-list.component.scss']
+  styleUrls: ['./book-list.component.scss', './book-list-overrides.scss', './book-list-mybook-style.scss']
 })
 export class BookListComponent implements OnInit {
   bookResponse: PageResponseBookResponse = {};
   page = 0;
-  size = 5;
+  size = 10;
   pages: any = [];
   message = '';
   level: 'success' |'error' = 'success';

@@ -13,7 +13,7 @@ export class MyBooksComponent implements OnInit {
 
   bookResponse: PageResponseBookResponse = {};
   page = 0;
-  size = 5;
+  size = 10;
   pages: any = [];
 
   constructor(

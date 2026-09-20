@@ -1,10 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {BookService} from '../../../../services/services/book.service';
-import {PageResponseBorrowedBookResponse} from '../../../../services/models/page-response-borrowed-book-response';
-import {BorrowedBookResponse} from '../../../../services/models/borrowed-book-response';
-import {BookResponse} from '../../../../services/models/book-response';
-import {FeedbackRequest} from '../../../../services/models/feedback-request';
-import {FeedbackService} from '../../../../services/services/feedback.service';
+import {BorrowRequestResponse} from '../../../../services/models/borrow-request-response';
+import {PageResponseBorrowRequestResponse} from '../../../../services/models/page-response-borrow-request-response';
 
 @Component({
   selector: 'app-borrowed-book-list',
@@ -12,89 +9,54 @@ import {FeedbackService} from '../../../../services/services/feedback.service';
   styleUrls: ['./borrowed-book-list.component.scss']
 })
 export class BorrowedBookListComponent implements OnInit {
+  borrowedRequests: PageResponseBorrowRequestResponse = {};
   page = 0;
   size = 5;
-  pages: any = [];
-  borrowedBooks: PageResponseBorrowedBookResponse = {};
-  selectedBook: BookResponse | undefined = undefined;
-  feedbackRequest: FeedbackRequest = {bookId: 0, comment: '', note: 0};
-  constructor(
-    private bookService: BookService,
-    private feedbackService: FeedbackService
-  ) {
-  }
+  pages: number[] = [];
+  selectedRequest: BorrowRequestResponse | null = null;
+  isLoading = false;
+  errorMessage = '';
+
+  constructor(private bookService: BookService) {}
+
   ngOnInit(): void {
-    this.findAllBorrowedBooks();
+    this.loadBorrowedRequests();
   }
 
-  private findAllBorrowedBooks() {
-    this.bookService.findAllBorrowedBooks({
-      page: this.page,
-      size: this.size
-    }).subscribe({
-      next: (resp) => {
-        this.borrowedBooks = resp;
-        this.pages = Array(this.borrowedBooks.totalPages)
-          .fill(0)
-          .map((x, i) => i);
+  loadBorrowedRequests(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.bookService.findAllBorrowedRequests({page: this.page, size: this.size}).subscribe({
+      next: (requests) => {
+        this.borrowedRequests = requests;
+        this.pages = Array.from({length: requests.totalPages || 0}, (_, index) => index);
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+        this.errorMessage = 'Unable to load your borrowed requests. Please try again.';
       }
     });
   }
 
-  gotToPage(page: number) {
+  goToPage(page: number): void {
+    if (page < 0 || page >= (this.borrowedRequests.totalPages || 0) || page === this.page) {
+      return;
+    }
     this.page = page;
-    this.findAllBorrowedBooks();
+    this.loadBorrowedRequests();
   }
 
-  goToFirstPage() {
-    this.page = 0;
-    this.findAllBorrowedBooks();
+  get isFirstPage(): boolean { return this.page === 0; }
+  get isLastPage(): boolean { return this.page >= (this.borrowedRequests.totalPages || 1) - 1; }
+  selectRequest(request: BorrowRequestResponse): void { this.selectedRequest = request; }
+  closeDetails(): void { this.selectedRequest = null; }
+
+  formatDate(value?: string): string {
+    if (!value) { return 'Not provided'; }
+    return new Intl.DateTimeFormat('en', {dateStyle: 'medium', timeStyle: 'short'}).format(new Date(value));
   }
 
-  goToPreviousPage() {
-    this.page --;
-    this.findAllBorrowedBooks();
-  }
-
-  goToLastPage() {
-    this.page = this.borrowedBooks.totalPages as number - 1;
-    this.findAllBorrowedBooks();
-  }
-
-  goToNextPage() {
-    this.page++;
-    this.findAllBorrowedBooks();
-  }
-
-  get isLastPage() {
-    return this.page === this.borrowedBooks.totalPages as number - 1;
-  }
-
-  returnBorrowedBook(book: BorrowedBookResponse) {
-    this.selectedBook = book;
-    this.feedbackRequest.bookId = book.id as number;
-  }
-
-  returnBook(withFeedback: boolean) {
-    this.bookService.returnBorrowBook({
-      'book-id': this.selectedBook?.id as number
-    }).subscribe({
-      next: () => {
-        if (withFeedback) {
-          this.giveFeedback();
-        }
-        this.selectedBook = undefined;
-        this.findAllBorrowedBooks();
-      }
-    });
-  }
-
-  private giveFeedback() {
-    this.feedbackService.saveFeedback({
-      body: this.feedbackRequest
-    }).subscribe({
-      next: () => {
-      }
-    });
-  }
+  statusClass(status?: string): string { return `status-${(status || 'pending').toLowerCase()}`; }
+  statusLabel(status?: string): string { return status ? status.charAt(0) + status.slice(1).toLowerCase() : 'Pending'; }
 }
