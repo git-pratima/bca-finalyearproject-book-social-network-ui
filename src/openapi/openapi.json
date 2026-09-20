@@ -698,7 +698,7 @@
     "schemas": {
       "FeedbackRequest": {
         "required": [
-          "bookId",
+          "bookName",
           "comment"
         ],
         "type": "object",
@@ -712,9 +712,8 @@
           "comment": {
             "type": "string"
           },
-          "bookId": {
-            "type": "integer",
-            "format": "int32"
+          "bookName": {
+            "type": "string"
           }
         }
       },

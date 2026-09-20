@@ -4,6 +4,19 @@ import {BookResponse} from '../../../../services/models/book-response';
 import {BookBorrowRequest} from '../../../../services/models/book-borrow-request';
 import {BookService} from '../../../../services/services/book.service';
 import {resolveBookCover} from '../../utils/book-cover';
+import {Router} from '@angular/router';
+
+interface BorrowConfirmation {
+  bookName?: string;
+  borrowRequestId?: number;
+  borrowFromDate?: string;
+  borrowToDate?: string;
+  returnPeriodDay?: number;
+  finalReturnDate?: string;
+  agreeToFollowPickupInstruction?: string;
+  agreeToReturnBorrowedBookAtSameLocation?: string;
+  comment?: string;
+}
 
 @Component({
   selector: 'app-borrow-request',
@@ -24,8 +37,13 @@ export class BorrowRequestComponent {
   isSubmitting = false;
   coverFailed = false;
   errorMessage = '';
+  confirmation: BorrowConfirmation | null = null;
+  confirmationMessage = '';
 
-  constructor(private bookService: BookService) {}
+  constructor(
+    private bookService: BookService,
+    private router: Router
+  ) {}
 
   get coverSrc(): string | undefined {
     return this.coverFailed ? undefined : resolveBookCover(this.book);
@@ -57,12 +75,25 @@ export class BorrowRequestComponent {
 
   close(): void {
     if (!this.isSubmitting) {
+      if (this.confirmation) {
+        this.router.navigate(['/books']);
+      }
       this.closed.emit();
     }
   }
 
+  formatConfirmationDate(value?: string): string {
+    if (!value) {
+      return 'Not provided';
+    }
+    return new Intl.DateTimeFormat('en', {
+      dateStyle: 'medium',
+      timeStyle: 'short'
+    }).format(new Date(value));
+  }
+
   submit(form: NgForm): void {
-    if (form.invalid || !this.book.id || !this.returnPeriodDay || this.returnPeriodDay < 1 || this.returnPeriodDay > 7 || !this.finalReturnDate || this.isSubmitting) {
+    if (form.invalid || !this.book.id || !this.book.title || !this.returnPeriodDay || this.returnPeriodDay < 1 || this.returnPeriodDay > 7 || !this.finalReturnDate || this.isSubmitting) {
       return;
     }
 
@@ -80,9 +111,11 @@ export class BorrowRequestComponent {
     this.isSubmitting = true;
     this.errorMessage = '';
     this.bookService.createBorrowRequest({body: request}).subscribe({
-      next: () => {
+      next: (response) => {
         this.isSubmitting = false;
-        this.submitted.emit();
+        const result = response as {status?: {message?: string}; data?: BorrowConfirmation};
+        this.confirmation = result.data || null;
+        this.confirmationMessage = result.status?.message || 'Book Borrow Request Submitted.';
       },
       error: (error) => {
         this.isSubmitting = false;
