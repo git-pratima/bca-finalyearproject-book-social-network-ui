@@ -244,6 +244,44 @@
         }
       }
     },
+    "/books/borrow-request": {
+      "get": {
+        "tags": [
+          "Book"
+        ],
+        "operationId": "findAllBorrowRequests",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BorrowRequestListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/auth/register": {
       "post": {
         "tags": [
@@ -796,6 +834,42 @@
           "comment": {
             "type": "string"
           }
+        }
+      },
+      "BorrowRequestResponse": {
+        "type": "object",
+        "properties": {
+          "bookId": { "type": "string" },
+          "bookName": { "type": "string" },
+          "bookCover": { "type": "string" },
+          "status": { "type": "string", "enum": ["SUBMITTED", "PENDING", "APPROVED", "REJECTED", "RETURNED"] },
+          "borrowRequestId": { "type": "integer", "format": "int32" },
+          "borrowFromDate": { "type": "string", "format": "date-time" },
+          "borrowToDate": { "type": "string", "format": "date-time" },
+          "returnPeriodDay": { "type": "integer", "format": "int32" },
+          "finalReturnDate": { "type": "string", "format": "date-time" },
+          "agreeToFollowPickupInstruction": { "type": "string" },
+          "agreeToReturnBorrowedBookAtSameLocation": { "type": "string" },
+          "comment": { "type": "string" }
+        }
+      },
+      "PageResponseBorrowRequestResponse": {
+        "type": "object",
+        "properties": {
+          "content": { "type": "array", "items": { "$ref": "#/components/schemas/BorrowRequestResponse" } },
+          "number": { "type": "integer", "format": "int32" },
+          "size": { "type": "integer", "format": "int32" },
+          "totalElements": { "type": "integer", "format": "int64" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "first": { "type": "boolean" },
+          "last": { "type": "boolean" }
+        }
+      },
+      "BorrowRequestListResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "object", "properties": { "status": { "type": "integer" }, "message": { "type": "string" } } },
+          "data": { "$ref": "#/components/schemas/PageResponseBorrowRequestResponse" }
         }
       },
       "RegistrationRequest": {

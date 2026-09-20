@@ -8,6 +8,7 @@ import {BorrowedBookListComponent} from './pages/borrowed-book-list/borrowed-boo
 import {ReturnedBooksComponent} from './pages/returned-books/returned-books.component';
 import {authGuard} from '../../services/guard/auth.guard';
 import {BookDetailsComponent} from './pages/book-details/book-details.component';
+import {BorrowRequestListComponent} from './pages/borrow-request-list/borrow-request-list.component';
 
 const routes: Routes = [
   {
@@ -28,6 +29,11 @@ const routes: Routes = [
       {
         path: 'my-borrowed-books',
         component: BorrowedBookListComponent,
+        canActivate: [authGuard]
+      },
+      {
+        path: 'borrow-requests',
+        component: BorrowRequestListComponent,
         canActivate: [authGuard]
       },
       {

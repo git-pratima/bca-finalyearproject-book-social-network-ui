@@ -22,6 +22,8 @@ import { findAllBooksByOwner } from '../fn/book/find-all-books-by-owner';
 import { FindAllBooksByOwner$Params } from '../fn/book/find-all-books-by-owner';
 import { findAllBorrowedBooks } from '../fn/book/find-all-borrowed-books';
 import { FindAllBorrowedBooks$Params } from '../fn/book/find-all-borrowed-books';
+import { findAllBorrowRequests } from '../fn/book/find-all-borrow-requests';
+import { FindAllBorrowRequests$Params, BorrowRequestListResponse } from '../fn/book/find-all-borrow-requests';
 import { findAllReturnedBooks } from '../fn/book/find-all-returned-books';
 import { FindAllReturnedBooks$Params } from '../fn/book/find-all-returned-books';
 import { findBookById } from '../fn/book/find-book-by-id';
@@ -38,6 +40,7 @@ import { updateShareableStatus } from '../fn/book/update-shareable-status';
 import { UpdateShareableStatus$Params } from '../fn/book/update-shareable-status';
 import { uploadBookCoverPicture } from '../fn/book/upload-book-cover-picture';
 import { UploadBookCoverPicture$Params } from '../fn/book/upload-book-cover-picture';
+import { PageResponseBorrowRequestResponse } from '../models/page-response-borrow-request-response';
 
 @Injectable({ providedIn: 'root' })
 export class BookService extends BaseService {
@@ -67,6 +70,19 @@ export class BookService extends BaseService {
   findAllBooks(params?: FindAllBooks$Params, context?: HttpContext): Observable<PageResponseBookResponse> {
     return this.findAllBooks$Response(params, context).pipe(
       map((r: StrictHttpResponse<PageResponseBookResponse>): PageResponseBookResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `findAllBorrowRequests()` */
+  static readonly FindAllBorrowRequestsPath = '/books/borrow-request';
+
+  findAllBorrowRequests$Response(params?: FindAllBorrowRequests$Params, context?: HttpContext): Observable<StrictHttpResponse<BorrowRequestListResponse>> {
+    return findAllBorrowRequests(this.http, this.rootUrl, params, context);
+  }
+
+  findAllBorrowRequests(params?: FindAllBorrowRequests$Params, context?: HttpContext): Observable<PageResponseBorrowRequestResponse> {
+    return this.findAllBorrowRequests$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BorrowRequestListResponse>): PageResponseBorrowRequestResponse => r.body.data || {})
     );
   }
 
