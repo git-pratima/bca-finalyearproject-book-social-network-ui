@@ -18,6 +18,7 @@ export class BookListComponent implements OnInit {
   level: 'success' |'error' = 'success';
   searchTerm = '';
   sortOption: 'featured' | 'title' | 'rating' = 'featured';
+  borrowBookSelection: BookResponse | null = null;
 
   constructor(
     private bookService: BookService,
@@ -103,21 +104,17 @@ export class BookListComponent implements OnInit {
   }
 
   borrowBook(book: BookResponse) {
-    this.message = '';
+    this.borrowBookSelection = book;
+  }
+
+  closeBorrowRequest() {
+    this.borrowBookSelection = null;
+  }
+
+  onBorrowRequestSubmitted() {
+    this.borrowBookSelection = null;
     this.level = 'success';
-    this.bookService.borrowBook({
-      'book-id': book.id as number
-    }).subscribe({
-      next: () => {
-        this.level = 'success';
-        this.message = 'Book successfully added to your list';
-      },
-      error: (err) => {
-        console.log(err);
-        this.level = 'error';
-        this.message = err.error.error;
-      }
-    });
+    this.message = 'Borrow request submitted successfully';
   }
 
   displayBookDetails(book: BookResponse) {

@@ -214,6 +214,36 @@
         }
       }
     },
+    "/books/borrow-book": {
+      "post": {
+        "tags": [
+          "Book"
+        ],
+        "operationId": "createBorrowRequest",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookBorrowRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/auth/register": {
       "post": {
         "tags": [
@@ -715,6 +745,57 @@
           },
           "shareable": {
             "type": "boolean"
+          }
+        }
+      },
+      "BookBorrowRequest": {
+        "required": [
+          "bookId",
+          "borrowFromDate",
+          "borrowToDate",
+          "returnPeriodDay",
+          "finalReturnDate",
+          "agreeToFollowPickupInstruction",
+          "agreeToReturnBorrowedBookAtSameLocation"
+        ],
+        "type": "object",
+        "properties": {
+          "bookId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "borrowFromDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "borrowToDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "returnPeriodDay": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "finalReturnDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "agreeToFollowPickupInstruction": {
+            "type": "string",
+            "enum": [
+              "YES",
+              "NO"
+            ]
+          },
+          "agreeToReturnBorrowedBookAtSameLocation": {
+            "type": "string",
+            "enum": [
+              "YES",
+              "NO"
+            ]
+          },
+          "comment": {
+            "type": "string"
           }
         }
       },

@@ -14,6 +14,8 @@ import { ApproveReturnBorrowBook$Params } from '../fn/book/approve-return-borrow
 import { BookResponse } from '../models/book-response';
 import { borrowBook } from '../fn/book/borrow-book';
 import { BorrowBook$Params } from '../fn/book/borrow-book';
+import { createBorrowRequest } from '../fn/book/create-borrow-request';
+import { CreateBorrowRequest$Params } from '../fn/book/create-borrow-request';
 import { findAllBooks } from '../fn/book/find-all-books';
 import { FindAllBooks$Params } from '../fn/book/find-all-books';
 import { findAllBooksByOwner } from '../fn/book/find-all-books-by-owner';
@@ -144,6 +146,35 @@ export class BookService extends BaseService {
   borrowBook(params: BorrowBook$Params, context?: HttpContext): Observable<number> {
     return this.borrowBook$Response(params, context).pipe(
       map((r: StrictHttpResponse<number>): number => r.body)
+    );
+  }
+
+  /** Path part for operation `createBorrowRequest()` */
+  static readonly CreateBorrowRequestPath = '/books/borrow-book';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `createBorrowRequest()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  createBorrowRequest$Response(params: CreateBorrowRequest$Params, context?: HttpContext): Observable<StrictHttpResponse<{
+}>> {
+    return createBorrowRequest(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `createBorrowRequest$Response()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  createBorrowRequest(params: CreateBorrowRequest$Params, context?: HttpContext): Observable<{
+}> {
+    return this.createBorrowRequest$Response(params, context).pipe(
+      map((r: StrictHttpResponse<{
+}>): {
+} => r.body)
     );
   }
 

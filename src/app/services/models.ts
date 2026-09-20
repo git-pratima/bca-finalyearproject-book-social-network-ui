@@ -3,6 +3,7 @@
 export { AuthenticationRequest } from './models/authentication-request';
 export { AuthenticationResponse } from './models/authentication-response';
 export { BookAddress } from './models/book-address';
+export { BookBorrowRequest } from './models/book-borrow-request';
 export { BookRequest } from './models/book-request';
 export { BookResponse } from './models/book-response';
 export { BorrowedBookResponse } from './models/borrowed-book-response';

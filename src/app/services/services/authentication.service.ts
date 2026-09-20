@@ -11,6 +11,8 @@ import { StrictHttpResponse } from '../strict-http-response';
 
 import { authenticate } from '../fn/authentication/authenticate';
 import { Authenticate$Params } from '../fn/authentication/authenticate';
+import { authenticateWithGoogle } from '../fn/authentication/authenticate-with-google';
+import { AuthenticateWithGoogle$Params } from '../fn/authentication/authenticate-with-google';
 import { AuthenticationResponse } from '../models/authentication-response';
 import { confirm } from '../fn/authentication/confirm';
 import { Confirm$Params } from '../fn/authentication/confirm';
@@ -73,6 +75,31 @@ export class AuthenticationService extends BaseService {
    */
   authenticate(params: Authenticate$Params, context?: HttpContext): Observable<AuthenticationResponse> {
     return this.authenticate$Response(params, context).pipe(
+      map((r: StrictHttpResponse<AuthenticationResponse>): AuthenticationResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `authenticateWithGoogle()` */
+  static readonly AuthenticateWithGooglePath = '/auth/google';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `authenticateWithGoogle()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  authenticateWithGoogle$Response(params: AuthenticateWithGoogle$Params, context?: HttpContext): Observable<StrictHttpResponse<AuthenticationResponse>> {
+    return authenticateWithGoogle(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `authenticateWithGoogle$Response()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  authenticateWithGoogle(params: AuthenticateWithGoogle$Params, context?: HttpContext): Observable<AuthenticationResponse> {
+    return this.authenticateWithGoogle$Response(params, context).pipe(
       map((r: StrictHttpResponse<AuthenticationResponse>): AuthenticationResponse => r.body)
     );
   }

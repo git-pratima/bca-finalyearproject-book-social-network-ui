@@ -20,6 +20,7 @@ export class BookDetailsComponent implements OnInit {
   message = '';
   messageType: 'success' | 'error' = 'success';
   isBorrowing = false;
+  isBorrowRequestOpen = false;
   coverFailed = false;
   private bookId = 0;
 
@@ -114,20 +115,18 @@ export class BookDetailsComponent implements OnInit {
     if (!this.book.id || !this.book.shareable || this.isBorrowing) {
       return;
     }
-    this.isBorrowing = true;
     this.message = '';
-    this.bookService.borrowBook({'book-id': this.book.id}).subscribe({
-      next: () => {
-        this.isBorrowing = false;
-        this.messageType = 'success';
-        this.message = 'Your borrow request has been added to your list.';
-      },
-      error: (error) => {
-        this.isBorrowing = false;
-        this.messageType = 'error';
-        this.message = error?.error?.error || 'We could not submit your request. Please try again.';
-      }
-    });
+    this.isBorrowRequestOpen = true;
+  }
+
+  closeBorrowRequest(): void {
+    this.isBorrowRequestOpen = false;
+  }
+
+  onBorrowRequestSubmitted(): void {
+    this.isBorrowRequestOpen = false;
+    this.messageType = 'success';
+    this.message = 'Your borrow request has been submitted.';
   }
 
 }

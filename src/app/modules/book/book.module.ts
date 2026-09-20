@@ -13,6 +13,7 @@ import { BorrowedBookListComponent } from './pages/borrowed-book-list/borrowed-b
 import { RatingComponent } from './components/rating/rating.component';
 import { ReturnedBooksComponent } from './pages/returned-books/returned-books.component';
 import { BookDetailsComponent } from './pages/book-details/book-details.component';
+import { BorrowRequestComponent } from './components/borrow-request/borrow-request.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { BookDetailsComponent } from './pages/book-details/book-details.componen
     BorrowedBookListComponent,
     RatingComponent,
     ReturnedBooksComponent,
-    BookDetailsComponent
+    BookDetailsComponent,
+    BorrowRequestComponent
   ],
   imports: [
     CommonModule,

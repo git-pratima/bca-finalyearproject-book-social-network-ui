@@ -15,7 +15,7 @@
       <div class="book-meta"><div><i class="fa-solid fa-barcode"></i><span>ISBN</span><strong>{{ book.isbn || 'Not provided' }}</strong></div><div><i class="fa-solid fa-user"></i><span>Shared by</span><strong>{{ book.owner || 'Community member' }}</strong></div></div>
 
       <div *ngIf="message" class="book-details-alert" [class.book-details-alert--error]="messageType === 'error'"><i class="fa-solid" [class.fa-circle-check]="messageType === 'success'" [class.fa-circle-exclamation]="messageType === 'error'"></i>{{ message }}</div>
-      <button class="borrow-button" type="button" [disabled]="!book.shareable || isBorrowing" (click)="borrowBook()"><i class="fa-solid" [class.fa-spinner]="isBorrowing" [class.fa-spin]="isBorrowing" [class.fa-hand-holding-heart]="!isBorrowing"></i>{{ isBorrowing ? 'Requesting…' : book.shareable ? 'Request to borrow' : 'Not available to borrow' }}</button>
+      <button class="borrow-button" type="button" [disabled]="!book.shareable || isBorrowing" (click)="borrowBook()"><i class="fa-solid fa-hand-holding-heart"></i>{{ book.shareable ? 'Request to borrow' : 'Not available to borrow' }}</button>
     </div>
   </section>
 
@@ -32,3 +32,4 @@
     <nav class="reviews-pagination" aria-label="Review pages" *ngIf="pages.length"><ul class="pagination mb-0"><li class="page-item"><a (click)="goToFirstPage()" class="page-link" href="javascript:void(0)" aria-label="First page" [class.disabled]="page === 0"><i class="fa-solid fa-angles-left"></i></a></li><li class="page-item"><a (click)="goToPreviousPage()" class="page-link" href="javascript:void(0)" aria-label="Previous page" [class.disabled]="page === 0"><i class="fa-solid fa-angle-left"></i></a></li><li class="page-item" *ngFor="let pageIndex of pages"><a (click)="gotToPage(pageIndex)" class="page-link" [class.active]="page === pageIndex" href="javascript:void(0)">{{ pageIndex + 1 }}</a></li><li class="page-item"><a (click)="goToNextPage()" class="page-link" href="javascript:void(0)" aria-label="Next page" [class.disabled]="isLastPage"><i class="fa-solid fa-angle-right"></i></a></li><li class="page-item"><a (click)="goToLastPage()" class="page-link" href="javascript:void(0)" aria-label="Last page" [class.disabled]="isLastPage"><i class="fa-solid fa-angles-right"></i></a></li></ul></nav>
   </section>
 </main>
+<app-borrow-request *ngIf="isBorrowRequestOpen" [book]="book" (closed)="closeBorrowRequest()" (submitted)="onBorrowRequestSubmitted()"></app-borrow-request>
