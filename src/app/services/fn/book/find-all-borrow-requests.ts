@@ -10,6 +10,9 @@ import { PageResponseBorrowRequestResponse } from '../../models/page-response-bo
 export interface FindAllBorrowRequests$Params {
   page?: number;
   size?: number;
+  status?: 'SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED' | 'RETURNED' | string;
+  searchParameter?: string;
+  searchKeyword?: string;
 }
 
 export interface BorrowRequestListResponse {
@@ -22,6 +25,9 @@ export function findAllBorrowRequests(http: HttpClient, rootUrl: string, params?
   if (params) {
     rb.query('page', params.page, {});
     rb.query('size', params.size, {});
+    rb.query('status', params.status, {});
+    rb.query('searchParameter', params.searchParameter, {});
+    rb.query('searchKeyword', params.searchKeyword, {});
   }
 
   return http.request(

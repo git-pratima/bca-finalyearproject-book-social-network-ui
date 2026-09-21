@@ -6,7 +6,7 @@ import {PageResponseBorrowRequestResponse} from '../../../../services/models/pag
 @Component({
   selector: 'app-borrow-request-list',
   templateUrl: './borrow-request-list.component.html',
-  styleUrls: ['./borrow-request-list.component.scss', './borrow-request-list-status.scss']
+  styleUrls: ['./borrow-request-list.component.scss', './borrow-request-list-status.scss', './borrow-request-list-filters.scss', './borrow-request-list-filter-overrides.scss']
 })
 export class BorrowRequestListComponent implements OnInit {
   requests: PageResponseBorrowRequestResponse = {};
@@ -16,6 +16,9 @@ export class BorrowRequestListComponent implements OnInit {
   selectedRequest: BorrowRequestResponse | null = null;
   isLoading = false;
   errorMessage = '';
+  status: '' | 'SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED' | 'RETURNED' = '';
+  searchParameter: 'title' | 'authorName' | 'isbn' = 'title';
+  searchKeyword = '';
 
   constructor(private bookService: BookService) {}
 
@@ -26,7 +29,13 @@ export class BorrowRequestListComponent implements OnInit {
   loadRequests(): void {
     this.isLoading = true;
     this.errorMessage = '';
-    this.bookService.findAllBorrowRequests({page: this.page, size: this.size}).subscribe({
+    this.bookService.findAllBorrowRequests({
+      page: this.page,
+      size: this.size,
+      status: this.status || undefined,
+      searchParameter: this.searchKeyword.trim() ? this.searchParameter : undefined,
+      searchKeyword: this.searchKeyword.trim() || undefined
+    }).subscribe({
       next: (requests) => {
         this.requests = requests;
         this.pages = Array.from({length: requests.totalPages || 0}, (_, index) => index);
@@ -37,6 +46,18 @@ export class BorrowRequestListComponent implements OnInit {
         this.errorMessage = 'Unable to load your borrow requests. Please try again.';
       }
     });
+  }
+
+  applyFilters(): void {
+    this.page = 0;
+    this.loadRequests();
+  }
+
+  clearFilters(): void {
+    this.status = '';
+    this.searchParameter = 'title';
+    this.searchKeyword = '';
+    this.applyFilters();
   }
 
   goToPage(page: number): void {
