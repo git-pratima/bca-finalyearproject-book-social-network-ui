@@ -11,6 +11,9 @@ import { BorrowRequestListResponse } from './find-all-borrow-requests';
 export interface FindAllBorrowedRequests$Params {
   page?: number;
   size?: number;
+  status?: 'SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED' | 'RETURNED' | string;
+  searchParameter?: string;
+  searchKeyword?: string;
 }
 
 export function findAllBorrowedRequests(http: HttpClient, rootUrl: string, params?: FindAllBorrowedRequests$Params, context?: HttpContext): Observable<StrictHttpResponse<BorrowRequestListResponse>> {
@@ -18,6 +21,9 @@ export function findAllBorrowedRequests(http: HttpClient, rootUrl: string, param
   if (params) {
     rb.query('page', params.page, {});
     rb.query('size', params.size, {});
+    rb.query('status', params.status, {});
+    rb.query('searchParameter', params.searchParameter, {});
+    rb.query('searchKeyword', params.searchKeyword, {});
   }
 
   return http.request(

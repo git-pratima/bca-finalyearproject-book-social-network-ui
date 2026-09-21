@@ -692,6 +692,32 @@
               "format": "int32",
               "default": 10
             }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["SUBMITTED", "PENDING", "APPROVED", "REJECTED", "RETURNED"]
+            }
+          },
+          {
+            "name": "searchParameter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["title", "authorName", "isbn"]
+            }
+          },
+          {
+            "name": "searchKeyword",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {

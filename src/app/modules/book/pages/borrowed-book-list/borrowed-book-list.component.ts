@@ -16,6 +16,9 @@ export class BorrowedBookListComponent implements OnInit {
   selectedRequest: BorrowRequestResponse | null = null;
   isLoading = false;
   errorMessage = '';
+  status: '' | 'SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED' | 'RETURNED' = '';
+  searchParameter: 'title' | 'authorName' | 'isbn' = 'title';
+  searchKeyword = '';
 
   constructor(private bookService: BookService) {}
 
@@ -26,7 +29,13 @@ export class BorrowedBookListComponent implements OnInit {
   loadBorrowedRequests(): void {
     this.isLoading = true;
     this.errorMessage = '';
-    this.bookService.findAllBorrowedRequests({page: this.page, size: this.size}).subscribe({
+    this.bookService.findAllBorrowedRequests({
+      page: this.page,
+      size: this.size,
+      status: this.status || undefined,
+      searchParameter: this.searchKeyword.trim() ? this.searchParameter : undefined,
+      searchKeyword: this.searchKeyword.trim() || undefined
+    }).subscribe({
       next: (requests) => {
         this.borrowedRequests = requests;
         this.pages = Array.from({length: requests.totalPages || 0}, (_, index) => index);
@@ -37,6 +46,18 @@ export class BorrowedBookListComponent implements OnInit {
         this.errorMessage = 'Unable to load your borrowed requests. Please try again.';
       }
     });
+  }
+
+  applyFilters(): void {
+    this.page = 0;
+    this.loadBorrowedRequests();
+  }
+
+  clearFilters(): void {
+    this.status = '';
+    this.searchParameter = 'title';
+    this.searchKeyword = '';
+    this.applyFilters();
   }
 
   goToPage(page: number): void {
