@@ -11,6 +11,11 @@ import { PageResponseBookResponse } from '../../models/page-response-book-respon
 export interface FindAllBooks$Params {
   page?: number;
   size?: number;
+  searchParameter?: 'title' | 'authorName' | 'isbn' | 'address' | string;
+  state?: string;
+  city?: string;
+  postalCode?: string;
+  searchKeyword?: string;
 }
 
 export function findAllBooks(http: HttpClient, rootUrl: string, params?: FindAllBooks$Params, context?: HttpContext): Observable<StrictHttpResponse<PageResponseBookResponse>> {
@@ -18,6 +23,11 @@ export function findAllBooks(http: HttpClient, rootUrl: string, params?: FindAll
   if (params) {
     rb.query('page', params.page, {});
     rb.query('size', params.size, {});
+    rb.query('searchParameter', params.searchParameter, {});
+    rb.query('state', params.state, {});
+    rb.query('city', params.city, {});
+    rb.query('postalCode', params.postalCode, {});
+    rb.query('searchKeyword', params.searchKeyword, {});
   }
 
   return http.request(

@@ -88,6 +88,47 @@
               "format": "int32",
               "default": 10
             }
+          },
+          {
+            "name": "searchParameter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["title", "authorName", "isbn", "address"]
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "city",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "postalCode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchKeyword",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {

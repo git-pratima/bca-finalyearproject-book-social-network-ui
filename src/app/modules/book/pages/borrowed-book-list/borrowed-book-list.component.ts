@@ -6,7 +6,7 @@ import {PageResponseBorrowRequestResponse} from '../../../../services/models/pag
 @Component({
   selector: 'app-borrowed-book-list',
   templateUrl: './borrowed-book-list.component.html',
-  styleUrls: ['./borrowed-book-list.component.scss']
+  styleUrls: ['./borrowed-book-list.component.scss', './borrowed-book-list-filter-overrides.scss', './borrowed-book-list-hero-overrides.scss']
 })
 export class BorrowedBookListComponent implements OnInit {
   borrowedRequests: PageResponseBorrowRequestResponse = {};

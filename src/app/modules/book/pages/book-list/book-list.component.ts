@@ -7,7 +7,7 @@ import {Router} from '@angular/router';
 @Component({
   selector: 'app-book-list',
   templateUrl: './book-list.component.html',
-  styleUrls: ['./book-list.component.scss', './book-list-overrides.scss', './book-list-mybook-style.scss']
+  styleUrls: ['./book-list.component.scss', './book-list-overrides.scss', './book-list-mybook-style.scss', './book-list-filters.scss']
 })
 export class BookListComponent implements OnInit {
   bookResponse: PageResponseBookResponse = {};
@@ -16,7 +16,12 @@ export class BookListComponent implements OnInit {
   pages: any = [];
   message = '';
   level: 'success' |'error' = 'success';
-  searchTerm = '';
+  searchParameter: 'title' | 'authorName' | 'isbn' | 'address' = 'title';
+  addressSearchParameter: 'title' | 'authorName' | 'isbn' = 'title';
+  searchKeyword = '';
+  state = '';
+  city = '';
+  postalCode = '';
   sortOption: 'featured' | 'title' | 'rating' = 'featured';
   borrowBookSelection: BookResponse | null = null;
 
@@ -33,7 +38,12 @@ export class BookListComponent implements OnInit {
   private findAllBooks() {
     this.bookService.findAllBooks({
       page: this.page,
-      size: this.size
+      size: this.size,
+      searchParameter: this.isAddressSearch ? this.addressSearchParameter : this.searchParameter,
+      state: this.isAddressSearch ? this.state.trim() || undefined : undefined,
+      city: this.isAddressSearch ? this.city.trim() || undefined : undefined,
+      postalCode: this.isAddressSearch ? this.postalCode.trim() || undefined : undefined,
+      searchKeyword: this.searchKeyword.trim() || undefined
     })
       .subscribe({
         next: (books) => {
@@ -75,16 +85,7 @@ export class BookListComponent implements OnInit {
   }
 
   get visibleBooks(): BookResponse[] {
-    const query = this.searchTerm.trim().toLowerCase();
-    const books = (this.bookResponse.content || []).filter((book) => {
-      if (!query) {
-        return true;
-      }
-      return [book.title, book.authorName, book.owner, book.isbn]
-        .some((value) => value?.toLowerCase().includes(query));
-    });
-
-    return [...books].sort((first, second) => {
+    return [...(this.bookResponse.content || [])].sort((first, second) => {
       if (this.sortOption === 'title') {
         return (first.title || '').localeCompare(second.title || '');
       }
@@ -95,8 +96,23 @@ export class BookListComponent implements OnInit {
     });
   }
 
-  updateSearch(value: string) {
-    this.searchTerm = value;
+  get isAddressSearch(): boolean {
+    return this.searchParameter === 'address';
+  }
+
+  applyFilters(): void {
+    this.page = 0;
+    this.findAllBooks();
+  }
+
+  clearFilters(): void {
+    this.searchParameter = 'title';
+    this.addressSearchParameter = 'title';
+    this.searchKeyword = '';
+    this.state = '';
+    this.city = '';
+    this.postalCode = '';
+    this.applyFilters();
   }
 
   updateSort(value: string) {
