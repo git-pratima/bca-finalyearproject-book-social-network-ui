@@ -1,8 +1,13 @@
 <section class="my-books-page">
 <header class="my-books-page__header"><div><p class="my-books-page__eyebrow"><i class="fa-solid fa-layer-group"></i> YOUR COLLECTION</p><h3>My books</h3><p>Manage the books you own, share, or archive.</p></div>
-  <a routerLink="/books/manage" class="btn btn-outline-primary">
-    <i class="fas fa-plus"></i>&nbsp;Add a book
-  </a>
+  <div class="my-books-page__actions">
+    <form class="my-books-filters" (ngSubmit)="applyFilters()">
+      <label><span>Search by</span><select name="searchParameter" [(ngModel)]="searchParameter"><option value="title">Title</option><option value="authorName">Author</option><option value="isbn">ISBN</option></select></label>
+      <label><span>Keyword</span><input name="searchKeyword" type="search" [(ngModel)]="searchKeyword" placeholder="Search books"></label>
+      <div class="my-books-filters__actions"><button type="submit" class="my-books-filter-submit"><i class="fa-solid fa-magnifying-glass"></i> Search</button><button type="button" class="my-books-filter-clear" (click)="clearFilters()">Clear</button></div>
+    </form>
+    <a routerLink="/books/manage" class="btn btn-outline-primary"><i class="fas fa-plus"></i>&nbsp;Add a book</a>
+  </div>
 </header>
 <div class="my-books-grid">
   <app-book-card

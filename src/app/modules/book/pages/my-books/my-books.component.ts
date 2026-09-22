@@ -7,7 +7,7 @@ import {Router} from '@angular/router';
 @Component({
   selector: 'app-my-books',
   templateUrl: './my-books.component.html',
-  styleUrls: ['./my-books.component.scss']
+  styleUrls: ['./my-books.component.scss', './my-books-filters.scss']
 })
 export class MyBooksComponent implements OnInit {
 
@@ -15,6 +15,8 @@ export class MyBooksComponent implements OnInit {
   page = 0;
   size = 10;
   pages: any = [];
+  searchParameter: 'title' | 'authorName' | 'isbn' = 'title';
+  searchKeyword = '';
 
   constructor(
     private bookService: BookService,
@@ -29,7 +31,9 @@ export class MyBooksComponent implements OnInit {
   private findAllBooks() {
     this.bookService.findAllBooksByOwner({
       page: this.page,
-      size: this.size
+      size: this.size,
+      searchParameter: this.searchKeyword.trim() ? this.searchParameter : undefined,
+      searchKeyword: this.searchKeyword.trim() || undefined
     })
       .subscribe({
         next: (books) => {
@@ -39,6 +43,17 @@ export class MyBooksComponent implements OnInit {
             .map((x, i) => i);
         }
       });
+  }
+
+  applyFilters(): void {
+    this.page = 0;
+    this.findAllBooks();
+  }
+
+  clearFilters(): void {
+    this.searchParameter = 'title';
+    this.searchKeyword = '';
+    this.applyFilters();
   }
 
   gotToPage(page: number) {
