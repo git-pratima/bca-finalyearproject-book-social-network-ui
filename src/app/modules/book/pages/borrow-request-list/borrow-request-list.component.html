@@ -5,7 +5,7 @@
   </header>
 
   <div class="borrow-requests-toolbar"><div><p class="borrow-requests-kicker">YOUR ACTIVITY</p><h2>Request history</h2></div><form class="borrow-requests-filters" (ngSubmit)="applyFilters()">
-    <label><span>Status</span><select name="status" [(ngModel)]="status"><option value="">All statuses</option><option value="SUBMITTED">Submitted</option><option value="PENDING">Pending</option><option value="APPROVED">Approved</option><option value="REJECTED">Rejected</option><option value="RETURNED">Returned</option></select></label>
+    <label><span>Status</span><select name="status" [(ngModel)]="status"><option value="">All statuses</option><option value="SUBMITTED">Submitted</option><option value="PENDING">Pending</option><option value="APPROVED">Approved</option><option value="REJECTED">Rejected</option><option value="RETURNED">Returned</option><option value="CANCEL">Cancel</option></select></label>
     <label><span>Search by</span><select name="searchParameter" [(ngModel)]="searchParameter"><option value="title">Title</option><option value="authorName">Author</option><option value="isbn">ISBN</option></select></label>
     <label class="borrow-requests-filters__keyword"><span>Keyword</span><input name="searchKeyword" type="search" [(ngModel)]="searchKeyword" placeholder="The Book Thief"></label>
     <div class="borrow-requests-filters__actions"><button type="submit" class="borrow-requests-filter-submit" [disabled]="isLoading"><i class="fa-solid fa-magnifying-glass"></i> Search</button><button type="button" class="borrow-requests-filter-clear" (click)="clearFilters()" [disabled]="isLoading">Clear</button></div>
