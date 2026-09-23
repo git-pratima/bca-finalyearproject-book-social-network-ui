@@ -50,20 +50,10 @@ export class BookCardComponent {
     this._discover = value;
   }
 
-  @Output() private share: EventEmitter<BookResponse> = new EventEmitter<BookResponse>();
-  @Output() private archive: EventEmitter<BookResponse> = new EventEmitter<BookResponse>();
   @Output() private addToWaitingList: EventEmitter<BookResponse> = new EventEmitter<BookResponse>();
   @Output() private borrow: EventEmitter<BookResponse> = new EventEmitter<BookResponse>();
   @Output() edit: EventEmitter<BookResponse> = new EventEmitter<BookResponse>();
   @Output() private details: EventEmitter<BookResponse> = new EventEmitter<BookResponse>();
-
-  onShare() {
-    this.share.emit(this._book);
-  }
-
-  onArchive() {
-    this.archive.emit(this._book);
-  }
 
   onAddToWaitingList() {
     this.addToWaitingList.emit(this._book);

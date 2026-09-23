@@ -3,6 +3,7 @@
 import { BookAddress } from './book-address';
 
 export interface BookRequest {
+  archive?: boolean;
   authorName: string;
   bookAddress?: BookAddress;
   id?: number;

@@ -19,6 +19,7 @@ export class ManageBookComponent implements OnInit {
     synopsis: '',
     title: '',
     shareable: true,
+    archive: false,
     bookAddress: this.emptyAddress()
   };
   selectedBookCover: any;
@@ -47,6 +48,7 @@ export class ManageBookComponent implements OnInit {
            isbn: book.isbn as string,
            synopsis: book.synopsis as string,
            shareable: book.shareable,
+           archive: book.archived,
            bookAddress: {...this.emptyAddress(), ...book.bookAddress},
            pickUpLocation: book.pickUpLocation || '',
            pickupInstructions: book.pickupInstructions || ''
