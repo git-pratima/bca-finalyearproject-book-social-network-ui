@@ -6,7 +6,7 @@ import {PageResponseBorrowRequestResponse} from '../../../../services/models/pag
 @Component({
   selector: 'app-borrow-request-list',
   templateUrl: './borrow-request-list.component.html',
-  styleUrls: ['./borrow-request-list.component.scss', './borrow-request-list-status.scss', './borrow-request-list-filters.scss', './borrow-request-list-filter-overrides.scss', './borrow-request-update.scss', './borrow-request-list-header-overrides.scss']
+  styleUrls: ['./borrow-request-list.component.scss', './borrow-request-list-status.scss', './borrow-request-list-status-overrides.scss', './borrow-request-list-filters.scss', './borrow-request-list-filter-overrides.scss', './borrow-request-update.scss', './borrow-request-list-header-overrides.scss']
 })
 export class BorrowRequestListComponent implements OnInit {
   requests: PageResponseBorrowRequestResponse = {};
