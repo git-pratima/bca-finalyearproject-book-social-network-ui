@@ -43,6 +43,8 @@ import { UpdateShareableStatus$Params } from '../fn/book/update-shareable-status
 import { uploadBookCoverPicture } from '../fn/book/upload-book-cover-picture';
 import { UploadBookCoverPicture$Params } from '../fn/book/upload-book-cover-picture';
 import { PageResponseBorrowRequestResponse } from '../models/page-response-borrow-request-response';
+import { updateBorrowRequest } from '../fn/book/update-borrow-request';
+import { UpdateBorrowRequest$Params, UpdateBorrowRequestResponse } from '../fn/book/update-borrow-request';
 
 @Injectable({ providedIn: 'root' })
 export class BookService extends BaseService {
@@ -95,6 +97,18 @@ export class BookService extends BaseService {
   findAllBorrowedRequests(params?: FindAllBorrowedRequests$Params, context?: HttpContext): Observable<PageResponseBorrowRequestResponse> {
     return this.findAllBorrowedRequests$Response(params, context).pipe(
       map((r: StrictHttpResponse<BorrowRequestListResponse>): PageResponseBorrowRequestResponse => r.body.data || {})
+    );
+  }
+
+  static readonly UpdateBorrowRequestPath = '/books/update-borrow-request';
+
+  updateBorrowRequest$Response(params: UpdateBorrowRequest$Params, context?: HttpContext): Observable<StrictHttpResponse<UpdateBorrowRequestResponse>> {
+    return updateBorrowRequest(this.http, this.rootUrl, params, context);
+  }
+
+  updateBorrowRequest(params: UpdateBorrowRequest$Params, context?: HttpContext): Observable<UpdateBorrowRequestResponse> {
+    return this.updateBorrowRequest$Response(params, context).pipe(
+      map((r: StrictHttpResponse<UpdateBorrowRequestResponse>): UpdateBorrowRequestResponse => r.body)
     );
   }
 

@@ -6,7 +6,7 @@ import {PageResponseBorrowRequestResponse} from '../../../../services/models/pag
 @Component({
   selector: 'app-borrow-request-list',
   templateUrl: './borrow-request-list.component.html',
-  styleUrls: ['./borrow-request-list.component.scss', './borrow-request-list-status.scss', './borrow-request-list-filters.scss', './borrow-request-list-filter-overrides.scss', './borrow-request-list-hero-overrides.scss']
+  styleUrls: ['./borrow-request-list.component.scss', './borrow-request-list-status.scss', './borrow-request-list-filters.scss', './borrow-request-list-filter-overrides.scss', './borrow-request-list-hero-overrides.scss', './borrow-request-update.scss']
 })
 export class BorrowRequestListComponent implements OnInit {
   requests: PageResponseBorrowRequestResponse = {};
@@ -19,6 +19,12 @@ export class BorrowRequestListComponent implements OnInit {
   status: '' | 'SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED' | 'RETURNED' = '';
   searchParameter: 'title' | 'authorName' | 'isbn' = 'title';
   searchKeyword = '';
+  updateStatus: 'APPROVED' | 'PENDING' | 'REJECTED' = 'PENDING';
+  updateShareable = true;
+  updateArchived = false;
+  isUpdatingRequest = false;
+  updateMessage = '';
+  updateError = '';
 
   constructor(private bookService: BookService) {}
 
@@ -78,10 +84,45 @@ export class BorrowRequestListComponent implements OnInit {
 
   selectRequest(request: BorrowRequestResponse): void {
     this.selectedRequest = request;
+    this.updateStatus = request.status === 'APPROVED' || request.status === 'REJECTED' ? request.status : 'PENDING';
+    this.updateShareable = true;
+    this.updateArchived = false;
+    this.updateMessage = '';
+    this.updateError = '';
   }
 
   closeDetails(): void {
     this.selectedRequest = null;
+  }
+
+  updateBorrowRequest(): void {
+    if (!this.selectedRequest?.bookId || !this.selectedRequest.borrowRequestId) {
+      this.updateError = 'Book and request details are required.';
+      return;
+    }
+
+    this.isUpdatingRequest = true;
+    this.updateMessage = '';
+    this.updateError = '';
+    this.bookService.updateBorrowRequest({
+      body: {
+        bookId: Number(this.selectedRequest.bookId),
+        borrowRequestId: this.selectedRequest.borrowRequestId,
+        shareable: this.updateShareable,
+        archived: this.updateArchived,
+        status: this.updateStatus
+      }
+    }).subscribe({
+      next: (response) => {
+        this.isUpdatingRequest = false;
+        this.selectedRequest = null;
+        this.loadRequests();
+      },
+      error: () => {
+        this.isUpdatingRequest = false;
+        this.updateError = 'Unable to update this borrow request. Please try again.';
+      }
+    });
   }
 
   formatDate(value?: string): string {
