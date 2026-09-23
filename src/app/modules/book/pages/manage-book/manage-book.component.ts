@@ -8,7 +8,7 @@ import { resolveBookCover } from '../../utils/book-cover';
 @Component({
   selector: 'app-manage-book',
   templateUrl: './manage-book.component.html',
-  styleUrls: ['./manage-book.component.scss']
+  styleUrls: ['./manage-book.component.scss', './manage-book-header-overrides.scss']
 })
 export class ManageBookComponent implements OnInit {
 

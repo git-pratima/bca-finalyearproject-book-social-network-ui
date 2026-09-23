@@ -7,7 +7,7 @@ import {Router} from '@angular/router';
 @Component({
   selector: 'app-book-list',
   templateUrl: './book-list.component.html',
-  styleUrls: ['./book-list.component.scss', './book-list-overrides.scss', './book-list-mybook-style.scss', './book-list-filters.scss']
+  styleUrls: ['./book-list.component.scss', './book-list-overrides.scss', './book-list-mybook-style.scss', './book-list-filters.scss', './book-list-header-overrides.scss']
 })
 export class BookListComponent implements OnInit {
   bookResponse: PageResponseBookResponse = {};

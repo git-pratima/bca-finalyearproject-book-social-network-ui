@@ -4,6 +4,8 @@ export interface BorrowRequestResponse {
   bookId?: string;
   bookName?: string;
   bookCover?: string;
+  borrowerName?: string;
+  ownerName?: string;
   status?: 'SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED' | 'RETURNED' | string;
   borrowRequestId?: number;
   borrowFromDate?: string;
