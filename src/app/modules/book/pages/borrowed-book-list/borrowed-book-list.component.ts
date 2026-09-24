@@ -6,7 +6,7 @@ import {PageResponseBorrowRequestResponse} from '../../../../services/models/pag
 @Component({
   selector: 'app-borrowed-book-list',
   templateUrl: './borrowed-book-list.component.html',
-  styleUrls: ['./borrowed-book-list.component.scss', './borrowed-book-list-filter-overrides.scss', './borrowed-book-list-status-overrides.scss', './borrowed-book-list-header-overrides.scss']
+  styleUrls: ['./borrowed-book-list.component.scss', './borrowed-book-list-filter-overrides.scss', './borrowed-book-list-status-overrides.scss', './borrowed-book-list-header-overrides.scss', '../borrow-request-list/borrow-request-update.scss']
 })
 export class BorrowedBookListComponent implements OnInit {
   borrowedRequests: PageResponseBorrowRequestResponse = {};
@@ -16,9 +16,13 @@ export class BorrowedBookListComponent implements OnInit {
   selectedRequest: BorrowRequestResponse | null = null;
   isLoading = false;
   errorMessage = '';
-  status: '' | 'SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED' | 'RETURNED' | 'CANCEL' = '';
+  status: '' | 'SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED' | 'RETURNED' | 'RETURNREQUEST' | 'RETURNAPPROVED' | 'RETURNCANCEL' | 'CANCEL' = '';
   searchParameter: 'title' | 'authorName' | 'isbn' = 'title';
   searchKeyword = '';
+  borrowedUpdateStatus: 'CANCEL' | 'RETURNREQUEST' | 'PENDING' = 'PENDING';
+  isUpdatingBorrowedRequest = false;
+  borrowedUpdateMessage = '';
+  borrowedUpdateError = '';
 
   constructor(private bookService: BookService) {}
 
@@ -70,8 +74,76 @@ export class BorrowedBookListComponent implements OnInit {
 
   get isFirstPage(): boolean { return this.page === 0; }
   get isLastPage(): boolean { return this.page >= (this.borrowedRequests.totalPages || 1) - 1; }
-  selectRequest(request: BorrowRequestResponse): void { this.selectedRequest = request; }
+
+  selectRequest(request: BorrowRequestResponse): void {
+    this.selectedRequest = request;
+    this.borrowedUpdateStatus = this.getInitialBorrowedStatus(request.status);
+    this.borrowedUpdateMessage = '';
+    this.borrowedUpdateError = '';
+  }
+
   closeDetails(): void { this.selectedRequest = null; }
+
+  getInitialBorrowedStatus(status?: string): 'CANCEL' | 'RETURNREQUEST' | 'PENDING' {
+    if (status === 'SUBMITTED') {
+      return 'CANCEL';
+    }
+    if (status === 'APPROVED') {
+      return 'RETURNREQUEST';
+    }
+    if (status === 'RETURNCANCEL') {
+      return 'RETURNREQUEST';
+    }
+    return 'PENDING';
+  }
+
+  getBorrowedStatusOptions(status?: string): Array<{ label: string; value: 'CANCEL' | 'RETURNREQUEST' | 'PENDING' }> {
+    if (status === 'SUBMITTED') {
+      return [{ label: 'Cancel request', value: 'CANCEL' }];
+    }
+    if (status === 'APPROVED') {
+      return [{ label: 'Return Request', value: 'RETURNREQUEST' }];
+    }
+    if (status === 'RETURNCANCEL') {
+      return [{ label: 'Return Request', value: 'RETURNREQUEST' }];
+    }
+    if (status === 'PENDING') {
+      return [{ label: 'Pending', value: 'PENDING' }];
+    }
+    return [];
+  }
+
+  submitBorrowedStatusUpdate(): void {
+    if (!this.selectedRequest?.bookId || !this.selectedRequest.borrowRequestId) {
+      this.borrowedUpdateError = 'Book and request details are required.';
+      return;
+    }
+
+    this.isUpdatingBorrowedRequest = true;
+    this.borrowedUpdateMessage = '';
+    this.borrowedUpdateError = '';
+
+    this.bookService.updateBorrowRequest({
+      body: {
+        bookId: Number(this.selectedRequest.bookId),
+        borrowRequestId: this.selectedRequest.borrowRequestId,
+        shareable: true,
+        archived: false,
+        status: this.borrowedUpdateStatus as any
+      }
+    }).subscribe({
+      next: () => {
+        this.isUpdatingBorrowedRequest = false;
+        this.borrowedUpdateMessage = 'Borrow request updated successfully.';
+        this.closeDetails();
+        this.loadBorrowedRequests();
+      },
+      error: () => {
+        this.isUpdatingBorrowedRequest = false;
+        this.borrowedUpdateError = 'Unable to update this borrow request. Please try again.';
+      }
+    });
+  }
 
   formatDate(value?: string): string {
     if (!value) { return 'Not provided'; }
@@ -79,5 +151,10 @@ export class BorrowedBookListComponent implements OnInit {
   }
 
   statusClass(status?: string): string { return `status-${(status || 'pending').toLowerCase()}`; }
-  statusLabel(status?: string): string { return status ? status.charAt(0) + status.slice(1).toLowerCase() : 'Pending'; }
+  statusLabel(status?: string): string {
+    if (status === 'RETURNREQUEST') { return 'Return Request Submitted'; }
+    if (status === 'RETURNAPPROVED') { return 'Return Approved'; }
+    if (status === 'RETURNCANCEL') { return 'Return Cancel'; }
+    return status ? status.charAt(0) + status.slice(1).toLowerCase() : 'Pending';
+  }
 }

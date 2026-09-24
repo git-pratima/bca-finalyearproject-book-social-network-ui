@@ -16,10 +16,10 @@ export class BorrowRequestListComponent implements OnInit {
   selectedRequest: BorrowRequestResponse | null = null;
   isLoading = false;
   errorMessage = '';
-  status: '' | 'SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED' | 'RETURNED' | 'CANCEL' = '';
+  status: '' | 'SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED' | 'RETURNED' | 'RETURNREQUEST' | 'RETURNAPPROVED' | 'RETURNCANCEL' | 'CANCEL' = '';
   searchParameter: 'title' | 'authorName' | 'isbn' = 'title';
   searchKeyword = '';
-  updateStatus: 'APPROVED' | 'PENDING' | 'REJECTED' = 'PENDING';
+  updateStatus: 'APPROVED' | 'PENDING' | 'REJECTED' | 'RETURNAPPROVED' | 'RETURNCANCEL' = 'PENDING';
   updateShareable = true;
   updateArchived = false;
   isUpdatingRequest = false;
@@ -84,7 +84,7 @@ export class BorrowRequestListComponent implements OnInit {
 
   selectRequest(request: BorrowRequestResponse): void {
     this.selectedRequest = request;
-    this.updateStatus = request.status === 'APPROVED' || request.status === 'REJECTED' ? request.status : 'PENDING';
+    this.updateStatus = request.status === 'RETURNREQUEST' ? 'RETURNAPPROVED' : request.status === 'APPROVED' || request.status === 'REJECTED' ? request.status : 'PENDING';
     this.updateShareable = true;
     this.updateArchived = false;
     this.updateMessage = '';
@@ -93,6 +93,20 @@ export class BorrowRequestListComponent implements OnInit {
 
   closeDetails(): void {
     this.selectedRequest = null;
+  }
+
+  getUpdateStatusOptions(): Array<{ label: string; value: 'APPROVED' | 'PENDING' | 'REJECTED' | 'RETURNAPPROVED' | 'RETURNCANCEL' }> {
+    if (this.selectedRequest?.status === 'RETURNREQUEST') {
+      return [
+        { label: 'Approve Return', value: 'RETURNAPPROVED' },
+        { label: 'Cancel Return', value: 'RETURNCANCEL' }
+      ];
+    }
+    return [
+      { label: 'Approved', value: 'APPROVED' },
+      { label: 'Pending', value: 'PENDING' },
+      { label: 'Rejected', value: 'REJECTED' }
+    ];
   }
 
   updateBorrowRequest(): void {
@@ -137,6 +151,9 @@ export class BorrowRequestListComponent implements OnInit {
   }
 
   statusLabel(status?: string): string {
+    if (status === 'RETURNREQUEST') { return 'Return Request Submitted'; }
+    if (status === 'RETURNAPPROVED') { return 'Return Approved'; }
+    if (status === 'RETURNCANCEL') { return 'Return Cancel'; }
     return status ? status.charAt(0) + status.slice(1).toLowerCase() : 'Pending';
   }
 }
