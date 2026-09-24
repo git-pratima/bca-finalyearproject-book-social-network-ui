@@ -23,6 +23,7 @@ export class BorrowedBookListComponent implements OnInit {
   isUpdatingBorrowedRequest = false;
   borrowedUpdateMessage = '';
   borrowedUpdateError = '';
+  newComment = '';
 
   constructor(private bookService: BookService) {}
 
@@ -80,6 +81,7 @@ export class BorrowedBookListComponent implements OnInit {
     this.borrowedUpdateStatus = this.getInitialBorrowedStatus(request.status);
     this.borrowedUpdateMessage = '';
     this.borrowedUpdateError = '';
+    this.newComment = '';
   }
 
   closeDetails(): void { this.selectedRequest = null; }
@@ -122,6 +124,7 @@ export class BorrowedBookListComponent implements OnInit {
     this.isUpdatingBorrowedRequest = true;
     this.borrowedUpdateMessage = '';
     this.borrowedUpdateError = '';
+    const newComment = [this.selectedRequest.comment, this.newComment.trim()].filter(Boolean).join('\n');
 
     this.bookService.updateBorrowRequest({
       body: {
@@ -129,7 +132,8 @@ export class BorrowedBookListComponent implements OnInit {
         borrowRequestId: this.selectedRequest.borrowRequestId,
         shareable: true,
         archived: false,
-        status: this.borrowedUpdateStatus as any
+        status: this.borrowedUpdateStatus as any,
+        newComment
       }
     }).subscribe({
       next: () => {

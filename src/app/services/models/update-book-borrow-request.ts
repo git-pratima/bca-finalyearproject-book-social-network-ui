@@ -4,4 +4,5 @@ export interface UpdateBookBorrowRequest {
   shareable: boolean;
   archived: boolean;
   status: 'APPROVED' | 'PENDING' | 'REJECTED' | 'RETURNAPPROVED' | 'RETURNCANCEL';
+  newComment?: string;
 }

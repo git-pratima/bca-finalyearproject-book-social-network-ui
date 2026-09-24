@@ -22,6 +22,7 @@ export class BorrowRequestListComponent implements OnInit {
   updateStatus: 'APPROVED' | 'PENDING' | 'REJECTED' | 'RETURNAPPROVED' | 'RETURNCANCEL' = 'PENDING';
   updateShareable = true;
   updateArchived = false;
+  newComment = '';
   isUpdatingRequest = false;
   updateMessage = '';
   updateError = '';
@@ -87,6 +88,7 @@ export class BorrowRequestListComponent implements OnInit {
     this.updateStatus = request.status === 'RETURNREQUEST' ? 'RETURNAPPROVED' : request.status === 'APPROVED' || request.status === 'REJECTED' ? request.status : 'PENDING';
     this.updateShareable = true;
     this.updateArchived = false;
+    this.newComment = '';
     this.updateMessage = '';
     this.updateError = '';
   }
@@ -118,13 +120,15 @@ export class BorrowRequestListComponent implements OnInit {
     this.isUpdatingRequest = true;
     this.updateMessage = '';
     this.updateError = '';
+    const newComment = [this.selectedRequest.comment, this.newComment.trim()].filter(Boolean).join('\n');
     this.bookService.updateBorrowRequest({
       body: {
         bookId: Number(this.selectedRequest.bookId),
         borrowRequestId: this.selectedRequest.borrowRequestId,
         shareable: this.updateShareable,
         archived: this.updateArchived,
-        status: this.updateStatus
+        status: this.updateStatus,
+        newComment
       }
     }).subscribe({
       next: (response) => {
