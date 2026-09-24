@@ -1,103 +1,13 @@
-<h2 class="returned-page__title">My returned books</h2>
-<hr>
-<div
-  *ngIf="message"
-  class="alert "
-  [class.alert-danger]="level==='error'"
-  [class.alert-success]="level==='success'"
-  role="alert"
->
-  <p>{{message}}</p>
-</div>
-<div>
-  <div class="table-scroll"><table class="table">
-    <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Title</th>
-      <th scope="col">Author</th>
-      <th scope="col">ISBN</th>
-      <th scope="col">Rate</th>
-      <th scope="col"><i class="fas fa-cogs"></i></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr
-      *ngFor="let book of returnedBooks.content; let index = index">
-      <th scope="row">{{ index + 1 }}</th>
-      <td>{{ book.title }}</td>
-      <td>{{ book.authorName }}</td>
-      <td>{{ book.isbn }}</td>
-      <td><i class="fas fa-star text-warning"></i> {{ book.rate }}</td>
-      <td>
-        <div class="d-flex gap-2">
-          <i *ngIf="book.returned" class="fa-regular fa-paper-plane text-primary"></i>
-          <i *ngIf="!book.returned" class="fa-solid fa-paper-plane text-success"></i>
-          <i class="fa-solid fa-circle-check" (click)="approveBookReturn(book)" [class.text-success]="book.returnApproved"></i>
-        </div>
-      </td>
-    </tr>
-    </tbody>
-  </table></div>
-  <div class="d-flex justify-content-center mt-3">
-    <nav aria-label="Page navigation example">
-      <ul class="pagination">
-        <li class="page-item">
-          <a
-            (click)="goToFirstPage()"
-            class="page-link"
-            href="javascript:void(0)"
-            aria-label="Previous"
-            [class.disabled]="page === 0"
-          >
-            <i class="fa-solid fa-angles-left"></i>
-          </a>
-        </li>
-        <li class="page-item">
-          <a
-            (click)="goToPreviousPage()"
-            class="page-link"
-            href="javascript:void(0)"
-            aria-label="Previous"
-            [class.disabled]="page === 0"
-          >
-            <i class="fa-solid fa-angle-left"></i>
-          </a>
-        </li>
-        <li
-          class="page-item"
-          *ngFor="let pageIndex of pages"
-        >
-          <a
-            (click)="gotToPage(pageIndex)"
-            class="page-link"
-            [class.active]="page === pageIndex"
-            href="javascript:void(0)"
-          >{{ pageIndex + 1 }}</a>
-        </li>
-        <li class="page-item">
-          <a
-            (click)="goToNextPage()"
-            class="page-link"
-            href="javascript:void(0)"
-            aria-label="Next"
-            [class.disabled]="isLastPage"
-          >
-            <i class="fa-solid fa-chevron-right"></i>
-          </a>
-        </li>
-        <li class="page-item">
-          <a
-            (click)="goToLastPage()"
-            class="page-link"
-            href="javascript:void(0)"
-            aria-label="Next"
-            [class.disabled]="isLastPage"
-          >
-            <i class="fa-solid fa-angles-right"></i>
-          </a>
-        </li>
-      </ul>
-    </nav>
-  </div>
-</div>
+<section class="returned-requests-page">
+  <header class="returned-requests-hero"><div><p class="returned-requests-kicker"><i class="fa-solid fa-rotate-left"></i> RETURN DESK</p><h1>Returned</h1><p>Review your return history and keep every handoff detail close.</p></div><div class="returned-requests-hero__stat"><strong>{{ returnedBooks.totalElements || 0 }}</strong><span>return records</span></div></header>
+  <div class="returned-requests-toolbar"><div><p class="returned-requests-kicker">YOUR ACTIVITY</p><h2>Return history</h2></div><form class="returned-requests-filters" (ngSubmit)="applyFilters()">
+    <label><span>Status</span><select name="status" [(ngModel)]="status"><option value="">All statuses</option><option value="RETURNREQUEST">Return Request Submitted</option><option value="RETURNAPPROVED">Return Approved</option><option value="RETURNCANCEL">Return Request Cancel</option></select></label>
+    <label><span>Search by</span><select name="searchParameter" [(ngModel)]="searchParameter"><option value="title">Title</option><option value="authorName">Author</option><option value="isbn">ISBN</option></select></label>
+    <label class="returned-requests-filters__keyword"><span>Keyword</span><input name="searchKeyword" type="search" [(ngModel)]="searchKeyword" placeholder="The Book Thief"></label>
+    <div class="returned-requests-filters__actions"><button type="submit" class="returned-requests-filter-submit"><i class="fa-solid fa-magnifying-glass"></i> Search</button><button type="button" class="returned-requests-filter-clear" (click)="clearFilters()">Clear</button></div>
+  </form><button type="button" class="returned-requests-refresh" (click)="findAllReturnedBooks()" [disabled]="isLoading"><i class="fa-solid" [class.fa-rotate-right]="!isLoading" [class.fa-spin]="isLoading"></i> Refresh</button></div>
+  <div class="returned-requests-alert" *ngIf="errorMessage" role="alert"><i class="fa-solid fa-circle-exclamation"></i>{{ errorMessage }}</div><div class="returned-requests-alert returned-requests-alert--success" *ngIf="message && level === 'success'" role="status"><i class="fa-solid fa-circle-check"></i>{{ message }}</div><div class="returned-requests-alert" *ngIf="message && level === 'error'" role="alert"><i class="fa-solid fa-circle-exclamation"></i>{{ message }}</div><div class="returned-requests-loading" *ngIf="isLoading && !returnedBooks.content?.length"><i class="fa-solid fa-spinner fa-spin"></i> Loading returned books</div><div class="returned-requests-empty" *ngIf="!isLoading && !errorMessage && !filteredBooks.length"><i class="fa-solid fa-book-open"></i><h3>No returned books yet</h3><p>Your return records will appear here.</p></div>
+  <div class="returned-requests-table-wrap" *ngIf="!isLoading && filteredBooks.length"><table class="returned-requests-table"><thead><tr><th>Book</th><th>Borrower</th><th>Borrow window</th><th>Return by</th><th>Status</th><th>Action</th></tr></thead><tbody><tr *ngFor="let request of filteredBooks" [ngClass]="'status-' + getBookStatus(request).toLowerCase()"><td><div class="returned-request-book"><span class="returned-request-book__cover"><img *ngIf="request.bookCover" [src]="request.bookCover" [alt]="request.bookName || 'Book cover'" loading="lazy"><i *ngIf="!request.bookCover" class="fa-solid fa-book-open"></i></span><div><strong>{{ request.bookName || 'Untitled book' }}</strong><small>Request #{{ request.borrowRequestId || '—' }} · Book {{ request.bookId || '—' }}</small></div></div></td><td><strong>{{ request.borrowerName || 'Not provided' }}</strong></td><td><strong>{{ request.borrowFromDate ? (request.borrowFromDate | date:'medium') : 'Not provided' }}</strong><small>until {{ request.borrowToDate ? (request.borrowToDate | date:'medium') : 'Not provided' }}</small></td><td><strong>{{ request.finalReturnDate ? (request.finalReturnDate | date:'medium') : 'Not provided' }}</strong></td><td><span class="returned-request-status"><i class="fa-solid fa-circle"></i> {{ statusLabel(getBookStatus(request)) }}</span></td><td><button type="button" class="returned-request-details" (click)="selectBook(request)"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>Details</span></button></td></tr></tbody></table></div>
+  <nav class="returned-requests-pagination" *ngIf="pages.length > 1" aria-label="Returned book pages"><button type="button" (click)="goToFirstPage()" [disabled]="page === 0" aria-label="First page"><i class="fa-solid fa-angles-left"></i></button><button type="button" (click)="goToPreviousPage()" [disabled]="page === 0" aria-label="Previous page"><i class="fa-solid fa-angle-left"></i></button><button type="button" *ngFor="let pageIndex of pages" (click)="gotToPage(pageIndex)" [class.active]="page === pageIndex">{{ pageIndex + 1 }}</button><button type="button" (click)="goToNextPage()" [disabled]="isLastPage" aria-label="Next page"><i class="fa-solid fa-angle-right"></i></button><button type="button" (click)="goToLastPage()" [disabled]="isLastPage" aria-label="Last page"><i class="fa-solid fa-angles-right"></i></button></nav>
+  <div class="returned-request-detail-backdrop" *ngIf="selectedBook" role="presentation" (click)="closeDetails()"><section class="returned-request-detail" role="dialog" aria-modal="true" (click)="$event.stopPropagation()"><button type="button" class="returned-request-detail__close" (click)="closeDetails()" aria-label="Close details"><i class="fa-solid fa-xmark"></i></button><p class="returned-requests-kicker">RETURN DETAILS</p><div class="returned-request-detail__heading"><span class="returned-request-detail__cover"><img *ngIf="selectedBook.bookCover" [src]="selectedBook.bookCover" [alt]="selectedBook.bookName || 'Book cover'"><i *ngIf="!selectedBook.bookCover" class="fa-solid fa-book-open"></i></span><div><h2>{{ selectedBook.bookName || 'Untitled book' }}</h2><p>Request #{{ selectedBook.borrowRequestId || '—' }}</p></div></div><span class="returned-request-detail__status" [ngClass]="'status-' + getBookStatus(selectedBook).toLowerCase()"><i class="fa-solid fa-circle"></i> {{ statusLabel(getBookStatus(selectedBook)) }}</span><div class="returned-request-detail__grid"><div><span>Book ID</span><strong>{{ selectedBook.bookId || 'Not provided' }}</strong></div><div><span>Borrower</span><strong>{{ selectedBook.borrowerName || 'Not provided' }}</strong></div><div><span>Owner</span><strong>{{ selectedBook.ownerName || 'Not provided' }}</strong></div><div><span>Author</span><strong>{{ selectedBook.author || 'Not provided' }}</strong></div><div><span>Borrow from</span><strong>{{ selectedBook.borrowFromDate ? (selectedBook.borrowFromDate | date:'medium') : 'Not provided' }}</strong></div><div><span>Borrow until</span><strong>{{ selectedBook.borrowToDate ? (selectedBook.borrowToDate | date:'medium') : 'Not provided' }}</strong></div><div><span>Final return date</span><strong>{{ selectedBook.finalReturnDate ? (selectedBook.finalReturnDate | date:'medium') : 'Not provided' }}</strong></div><div><span>Return period</span><strong>{{ selectedBook.returnPeriodDay || 0 }} days</strong></div></div><div class="returned-request-detail__comment"><span>Comment</span><p>{{ selectedBook.comment || 'No comment added.' }}</p></div></section></div>
+</section>

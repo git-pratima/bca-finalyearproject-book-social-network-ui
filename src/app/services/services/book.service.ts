@@ -27,11 +27,13 @@ import { FindAllBorrowRequests$Params, BorrowRequestListResponse } from '../fn/b
 import { findAllBorrowedRequests } from '../fn/book/find-all-borrowed-requests';
 import { FindAllBorrowedRequests$Params } from '../fn/book/find-all-borrowed-requests';
 import { findAllReturnedBooks } from '../fn/book/find-all-returned-books';
-import { FindAllReturnedBooks$Params } from '../fn/book/find-all-returned-books';
+import { FindAllReturnedBooks$Params, ReturnedBookListResponse } from '../fn/book/find-all-returned-books';
 import { findBookById } from '../fn/book/find-book-by-id';
 import { FindBookById$Params } from '../fn/book/find-book-by-id';
 import { PageResponseBookResponse } from '../models/page-response-book-response';
 import { PageResponseBorrowedBookResponse } from '../models/page-response-borrowed-book-response';
+import { PageResponseBorrowRequestResponse } from '../models/page-response-borrow-request-response';
+import { PageResponseReturnedBookRequestResponse } from '../models/page-response-returned-book-request-response';
 import { returnBorrowBook } from '../fn/book/return-borrow-book';
 import { ReturnBorrowBook$Params } from '../fn/book/return-borrow-book';
 import { saveBook } from '../fn/book/save-book';
@@ -42,7 +44,6 @@ import { updateShareableStatus } from '../fn/book/update-shareable-status';
 import { UpdateShareableStatus$Params } from '../fn/book/update-shareable-status';
 import { uploadBookCoverPicture } from '../fn/book/upload-book-cover-picture';
 import { UploadBookCoverPicture$Params } from '../fn/book/upload-book-cover-picture';
-import { PageResponseBorrowRequestResponse } from '../models/page-response-borrow-request-response';
 import { updateBorrowRequest } from '../fn/book/update-borrow-request';
 import { UpdateBorrowRequest$Params, UpdateBorrowRequestResponse } from '../fn/book/update-borrow-request';
 
@@ -346,7 +347,7 @@ export class BookService extends BaseService {
   }
 
   /** Path part for operation `findAllReturnedBooks()` */
-  static readonly FindAllReturnedBooksPath = '/books/returned';
+  static readonly FindAllReturnedBooksPath = '/books/returnbooks';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -354,7 +355,7 @@ export class BookService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  findAllReturnedBooks$Response(params?: FindAllReturnedBooks$Params, context?: HttpContext): Observable<StrictHttpResponse<PageResponseBorrowedBookResponse>> {
+  findAllReturnedBooks$Response(params?: FindAllReturnedBooks$Params, context?: HttpContext): Observable<StrictHttpResponse<ReturnedBookListResponse>> {
     return findAllReturnedBooks(this.http, this.rootUrl, params, context);
   }
 
@@ -364,9 +365,9 @@ export class BookService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  findAllReturnedBooks(params?: FindAllReturnedBooks$Params, context?: HttpContext): Observable<PageResponseBorrowedBookResponse> {
+  findAllReturnedBooks(params?: FindAllReturnedBooks$Params, context?: HttpContext): Observable<PageResponseReturnedBookRequestResponse> {
     return this.findAllReturnedBooks$Response(params, context).pipe(
-      map((r: StrictHttpResponse<PageResponseBorrowedBookResponse>): PageResponseBorrowedBookResponse => r.body)
+      map((r: StrictHttpResponse<ReturnedBookListResponse>): PageResponseReturnedBookRequestResponse => r.body.data || {})
     );
   }
 
