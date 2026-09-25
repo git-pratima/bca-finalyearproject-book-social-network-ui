@@ -120,7 +120,7 @@ export class BorrowRequestListComponent implements OnInit {
     this.isUpdatingRequest = true;
     this.updateMessage = '';
     this.updateError = '';
-    const newComment = [this.selectedRequest.comment, this.newComment.trim()].filter(Boolean).join('\n');
+    const newComment = [this.selectedRequest.comment?.trim(), this.newComment.trim()].filter(Boolean).join('\n');
     this.bookService.updateBorrowRequest({
       body: {
         bookId: Number(this.selectedRequest.bookId),

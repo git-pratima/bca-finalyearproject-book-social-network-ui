@@ -124,7 +124,7 @@ export class BorrowedBookListComponent implements OnInit {
     this.isUpdatingBorrowedRequest = true;
     this.borrowedUpdateMessage = '';
     this.borrowedUpdateError = '';
-    const newComment = [this.selectedRequest.comment, this.newComment.trim()].filter(Boolean).join('\n');
+    const newComment = [this.selectedRequest.comment?.trim(), this.newComment.trim()].filter(Boolean).join('\n');
 
     this.bookService.updateBorrowRequest({
       body: {
