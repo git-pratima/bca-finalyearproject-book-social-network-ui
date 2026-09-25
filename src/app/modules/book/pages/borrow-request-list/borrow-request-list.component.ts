@@ -158,6 +158,13 @@ export class BorrowRequestListComponent implements OnInit {
     return `${String(date.getDate()).padStart(2, '0')}-${months[date.getMonth()]}`;
   }
 
+  commentLines(value?: string): Array<{ date: string; text: string }> {
+    return (value || '').split(/\r?\n/).map((line) => {
+      const match = line.match(/^(\d{2}-[A-Za-z]{3}:)\s*(.*)$/);
+      return {date: match?.[1] || '', text: match?.[2] ?? line};
+    });
+  }
+
   statusClass(status?: string): string {
     return `status-${(status || 'pending').toLowerCase()}`;
   }

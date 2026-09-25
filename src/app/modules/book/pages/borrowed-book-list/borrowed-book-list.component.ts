@@ -19,7 +19,7 @@ export class BorrowedBookListComponent implements OnInit {
   status: '' | 'SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED' | 'RETURNED' | 'RETURNREQUEST' | 'RETURNAPPROVED' | 'RETURNCANCEL' | 'CANCEL' = '';
   searchParameter: 'title' | 'authorName' | 'isbn' = 'title';
   searchKeyword = '';
-  borrowedUpdateStatus: 'CANCEL' | 'RETURNREQUEST' | 'PENDING' = 'PENDING';
+  borrowedUpdateStatus: 'CANCEL' | 'RETURNREQUEST' | 'PENDING' | 'SUBMITTED' = 'PENDING';
   isUpdatingBorrowedRequest = false;
   borrowedUpdateMessage = '';
   borrowedUpdateError = '';
@@ -99,7 +99,7 @@ export class BorrowedBookListComponent implements OnInit {
     return 'PENDING';
   }
 
-  getBorrowedStatusOptions(status?: string): Array<{ label: string; value: 'CANCEL' | 'RETURNREQUEST' | 'PENDING' }> {
+  getBorrowedStatusOptions(status?: string): Array<{ label: string; value: 'CANCEL' | 'RETURNREQUEST' | 'PENDING' | 'SUBMITTED' }> {
     if (status === 'SUBMITTED') {
       return [{ label: 'Cancel request', value: 'CANCEL' }];
     }
@@ -110,7 +110,10 @@ export class BorrowedBookListComponent implements OnInit {
       return [{ label: 'Return Request', value: 'RETURNREQUEST' }];
     }
     if (status === 'PENDING') {
-      return [{ label: 'Pending', value: 'PENDING' }];
+      return [
+        { label: 'Pending', value: 'PENDING' },
+        { label: 'Submit', value: 'SUBMITTED' }
+      ];
     }
     return [];
   }
@@ -160,6 +163,13 @@ export class BorrowedBookListComponent implements OnInit {
     const date = new Date();
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     return `${String(date.getDate()).padStart(2, '0')}-${months[date.getMonth()]}`;
+  }
+
+  commentLines(value?: string): Array<{ date: string; text: string }> {
+    return (value || '').split(/\r?\n/).map((line) => {
+      const match = line.match(/^(\d{2}-[A-Za-z]{3}:)\s*(.*)$/);
+      return {date: match?.[1] || '', text: match?.[2] ?? line};
+    });
   }
 
   statusClass(status?: string): string { return `status-${(status || 'pending').toLowerCase()}`; }

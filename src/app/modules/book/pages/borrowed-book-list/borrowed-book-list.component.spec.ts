@@ -22,7 +22,7 @@ describe('BorrowedBookListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should expose CANCEL for submitted requests, RETURNREQUEST for approved requests, and PENDING for pending requests', () => {
+  it('should expose CANCEL for submitted requests, RETURNREQUEST for approved requests, and PENDING and SUBMIT for pending requests', () => {
     expect(component.getBorrowedStatusOptions('SUBMITTED')).toEqual([
       { label: 'Cancel request', value: 'CANCEL' }
     ]);
@@ -32,7 +32,8 @@ describe('BorrowedBookListComponent', () => {
     ]);
 
     expect(component.getBorrowedStatusOptions('PENDING')).toEqual([
-      { label: 'Pending', value: 'PENDING' }
+      { label: 'Pending', value: 'PENDING' },
+      { label: 'Submit', value: 'SUBMITTED' }
     ]);
   });
 });
