@@ -120,7 +120,9 @@ export class BorrowRequestListComponent implements OnInit {
     this.isUpdatingRequest = true;
     this.updateMessage = '';
     this.updateError = '';
-    const newComment = [this.selectedRequest.comment?.trim(), this.newComment.trim()].filter(Boolean).join('\n');
+    const comment = this.newComment.trim();
+    const datedComment = comment ? `${this.formatCommentDate()}: ${comment}` : '';
+    const newComment = [this.selectedRequest.comment?.trim(), datedComment].filter(Boolean).join('\n');
     this.bookService.updateBorrowRequest({
       body: {
         bookId: Number(this.selectedRequest.bookId),
@@ -148,6 +150,12 @@ export class BorrowRequestListComponent implements OnInit {
       return 'Not provided';
     }
     return new Intl.DateTimeFormat('en', {dateStyle: 'medium', timeStyle: 'short'}).format(new Date(value));
+  }
+
+  formatCommentDate(): string {
+    const date = new Date();
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${String(date.getDate()).padStart(2, '0')}-${months[date.getMonth()]}`;
   }
 
   statusClass(status?: string): string {
