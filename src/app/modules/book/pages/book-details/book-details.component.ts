@@ -4,6 +4,7 @@ import {BookService} from '../../../../services/services/book.service';
 import {ActivatedRoute} from '@angular/router';
 import {FeedbackService} from '../../../../services/services/feedback.service';
 import {PageResponseFeedbackResponse} from '../../../../services/models/page-response-feedback-response';
+import {FeedbackResponse} from '../../../../services/models/feedback-response';
 import { resolveBookCover } from '../../utils/book-cover';
 
 @Component({
@@ -39,7 +40,9 @@ export class BookDetailsComponent implements OnInit {
         next: (book) => {
           this.book = book;
           this.coverFailed = false;
-          this.findAllFeedbacks();
+          if (book.feedbackList === undefined) {
+            this.findAllFeedbacks();
+          }
         }
       });
     }
@@ -91,6 +94,18 @@ export class BookDetailsComponent implements OnInit {
 
   get isLastPage() {
     return this.page >= (this.feedbacks.totalPages || 1) - 1;
+  }
+
+  get displayedFeedbacks(): FeedbackResponse[] {
+    return this.book.feedbackList ?? this.feedbacks.content ?? [];
+  }
+
+  get displayedFeedbackCount(): number {
+    return this.book.feedbackList?.length ?? this.feedbacks.totalElements ?? 0;
+  }
+
+  get averageRating(): number {
+    return this.book.averageRating ?? this.book.rate ?? 0;
   }
 
   get addressLines(): string[] {

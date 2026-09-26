@@ -24,6 +24,8 @@ export class BorrowedBookListComponent implements OnInit {
   borrowedUpdateMessage = '';
   borrowedUpdateError = '';
   newComment = '';
+  feedbackRating = 0;
+  feedbackComment = '';
 
   constructor(private bookService: BookService) {}
 
@@ -82,9 +84,23 @@ export class BorrowedBookListComponent implements OnInit {
     this.borrowedUpdateMessage = '';
     this.borrowedUpdateError = '';
     this.newComment = '';
+    this.feedbackRating = 0;
+    this.feedbackComment = '';
   }
 
   closeDetails(): void { this.selectedRequest = null; }
+
+  get showFeedbackForm(): boolean {
+    return this.selectedRequest?.status === 'APPROVED';
+  }
+
+  get feedbackIsValid(): boolean {
+    return this.feedbackRating >= 1 && this.feedbackRating <= 5 && !!this.feedbackComment.trim();
+  }
+
+  setFeedbackRating(rating: number): void {
+    this.feedbackRating = rating;
+  }
 
   getInitialBorrowedStatus(status?: string): 'CANCEL' | 'RETURNREQUEST' | 'PENDING' {
     if (status === 'SUBMITTED') {
@@ -107,7 +123,10 @@ export class BorrowedBookListComponent implements OnInit {
       return [{ label: 'Return Request', value: 'RETURNREQUEST' }];
     }
     if (status === 'RETURNCANCEL') {
-      return [{ label: 'Return Request', value: 'RETURNREQUEST' }];
+      return [
+        { label: 'Return Request', value: 'RETURNREQUEST' },
+        { label: 'Submit', value: 'SUBMITTED' }
+      ];
     }
     if (status === 'PENDING') {
       return [
@@ -138,7 +157,12 @@ export class BorrowedBookListComponent implements OnInit {
         shareable: true,
         archived: false,
         status: this.borrowedUpdateStatus as any,
-        newComment
+        newComment,
+        feedbackRequest: this.showFeedbackForm ? {
+          bookId: Number(this.selectedRequest.bookId),
+          rating: this.feedbackRating,
+          comment: this.feedbackComment.trim()
+        } : undefined
       }
     }).subscribe({
       next: () => {

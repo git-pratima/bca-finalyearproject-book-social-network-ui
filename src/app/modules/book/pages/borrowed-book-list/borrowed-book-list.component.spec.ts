@@ -31,6 +31,11 @@ describe('BorrowedBookListComponent', () => {
       { label: 'Return Request', value: 'RETURNREQUEST' }
     ]);
 
+    expect(component.getBorrowedStatusOptions('RETURNCANCEL')).toEqual([
+      { label: 'Return Request', value: 'RETURNREQUEST' },
+      { label: 'Submit', value: 'SUBMITTED' }
+    ]);
+
     expect(component.getBorrowedStatusOptions('PENDING')).toEqual([
       { label: 'Pending', value: 'PENDING' },
       { label: 'Submit', value: 'SUBMITTED' }

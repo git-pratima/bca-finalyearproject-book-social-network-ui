@@ -90,7 +90,7 @@ export class BookListComponent implements OnInit {
         return (first.title || '').localeCompare(second.title || '');
       }
       if (this.sortOption === 'rating') {
-        return (second.rate || 0) - (first.rate || 0);
+        return (second.averageRating ?? second.rate ?? 0) - (first.averageRating ?? first.rate ?? 0);
       }
       return 0;
     });
