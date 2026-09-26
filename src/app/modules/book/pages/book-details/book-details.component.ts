@@ -5,6 +5,7 @@ import {ActivatedRoute} from '@angular/router';
 import {FeedbackService} from '../../../../services/services/feedback.service';
 import {PageResponseFeedbackResponse} from '../../../../services/models/page-response-feedback-response';
 import {FeedbackResponse} from '../../../../services/models/feedback-response';
+import {WatchlistService} from '../../../../services/services/watchlist.service';
 import { resolveBookCover } from '../../utils/book-cover';
 
 @Component({
@@ -22,12 +23,15 @@ export class BookDetailsComponent implements OnInit {
   messageType: 'success' | 'error' = 'success';
   isBorrowing = false;
   isBorrowRequestOpen = false;
+  watchlistLoading = false;
+  watchlistError = false;
   coverFailed = false;
   private bookId = 0;
 
   constructor(
     private bookService: BookService,
     private feedbackService: FeedbackService,
+    private watchlistService: WatchlistService,
     private activatedRoute: ActivatedRoute
   ) {
   }
@@ -124,6 +128,26 @@ export class BookDetailsComponent implements OnInit {
 
   onCoverError(): void {
     this.coverFailed = true;
+  }
+
+  toggleWatchlist(event: Event): void {
+    event.stopPropagation();
+    if (!this.book.id || this.watchlistLoading) {
+      return;
+    }
+
+    this.watchlistLoading = true;
+    this.watchlistError = false;
+    this.watchlistService.toggleBook(this.book.id).subscribe({
+      next: () => {
+        this.book.watchlisted = !this.book.watchlisted;
+        this.watchlistLoading = false;
+      },
+      error: () => {
+        this.watchlistError = true;
+        this.watchlistLoading = false;
+      }
+    });
   }
 
   borrowBook(): void {

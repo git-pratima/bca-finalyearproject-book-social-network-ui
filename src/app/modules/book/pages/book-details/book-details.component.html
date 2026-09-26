@@ -2,7 +2,7 @@
   <a class="book-details-back" routerLink="/books"><i class="fa-solid fa-arrow-left"></i> Back to library</a>
 
   <section class="book-details-hero" *ngIf="book.id">
-    <div class="book-details-cover"><img *ngIf="coverSrc; else coverPlaceholder" [src]="coverSrc" [alt]="book.title || 'Book cover'" (error)="onCoverError()"><ng-template #coverPlaceholder><div class="book-details-cover__placeholder"><i class="fa-solid fa-book-open"></i><span>No cover available</span></div></ng-template></div>
+    <div class="book-details-cover"><img *ngIf="coverSrc; else coverPlaceholder" [src]="coverSrc" [alt]="book.title || 'Book cover'" (error)="onCoverError()"><ng-template #coverPlaceholder><div class="book-details-cover__placeholder"><i class="fa-solid fa-book-open"></i><span>No cover available</span></div></ng-template><button class="book-details-watchlist" type="button" [disabled]="watchlistLoading" [attr.aria-pressed]="!!book.watchlisted" [attr.aria-label]="book.watchlisted ? 'Remove book from watchlist' : 'Add book to watchlist'" [title]="watchlistError ? 'Could not update watchlist. Try again.' : (book.watchlisted ? 'Remove from watchlist' : 'Add to watchlist')" (click)="toggleWatchlist($event)"><i [class.fa-solid]="book.watchlisted" [class.fa-regular]="!book.watchlisted" class="fa-star" aria-hidden="true"></i></button></div>
 
     <div class="book-details-copy">
       <p class="book-details-kicker"><i class="fa-solid fa-book-open"></i> COMMUNITY BOOK</p>
