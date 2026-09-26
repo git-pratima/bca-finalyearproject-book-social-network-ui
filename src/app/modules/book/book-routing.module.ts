@@ -9,6 +9,7 @@ import {ReturnedBooksComponent} from './pages/returned-books/returned-books.comp
 import {authGuard} from '../../services/guard/auth.guard';
 import {BookDetailsComponent} from './pages/book-details/book-details.component';
 import {BorrowRequestListComponent} from './pages/borrow-request-list/borrow-request-list.component';
+import {WatchlistComponent} from './pages/watchlist/watchlist.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,16 @@ const routes: Routes = [
         path: 'my-books',
         component: MyBooksComponent,
         canActivate: [authGuard]
+      },
+      {
+        path: 'watchlist',
+        component: WatchlistComponent,
+        canActivate: [authGuard]
+      },
+      {
+        path: 'my-waiting-list',
+        redirectTo: 'watchlist',
+        pathMatch: 'full'
       },
       {
         path: 'my-borrowed-books',

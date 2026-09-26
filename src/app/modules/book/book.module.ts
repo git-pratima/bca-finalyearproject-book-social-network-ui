@@ -15,6 +15,7 @@ import { ReturnedBooksComponent } from './pages/returned-books/returned-books.co
 import { BookDetailsComponent } from './pages/book-details/book-details.component';
 import { BorrowRequestComponent } from './components/borrow-request/borrow-request.component';
 import { BorrowRequestListComponent } from './pages/borrow-request-list/borrow-request-list.component';
+import { WatchlistComponent } from './pages/watchlist/watchlist.component';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { BorrowRequestListComponent } from './pages/borrow-request-list/borrow-r
     ReturnedBooksComponent,
     BookDetailsComponent,
     BorrowRequestComponent,
-    BorrowRequestListComponent
+    BorrowRequestListComponent,
+    WatchlistComponent
   ],
   imports: [
     CommonModule,

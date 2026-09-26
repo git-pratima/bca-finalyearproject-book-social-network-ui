@@ -1,0 +1,42 @@
+<section class="watchlist-page">
+  <header class="watchlist-header">
+    <div>
+      <p class="watchlist-kicker"><i class="fa-solid fa-star"></i> YOUR LIBRARY</p>
+      <h1>Watchlist</h1>
+      <p>Books you have saved for later.</p>
+    </div>
+    <div class="watchlist-count"><strong>{{ books.length }}</strong><span>{{ books.length === 1 ? 'book saved' : 'books saved' }}</span></div>
+  </header>
+
+  <div class="watchlist-toolbar">
+    <h2>Saved books</h2>
+    <button type="button" class="watchlist-refresh" (click)="loadWatchlist()" [disabled]="isLoading" aria-label="Refresh watchlist">
+      <i class="fa-solid" [class.fa-rotate-right]="!isLoading" [class.fa-spin]="isLoading"></i><span>Refresh</span>
+    </button>
+  </div>
+
+  <div class="watchlist-alert" *ngIf="errorMessage" role="alert">
+    <span>{{ errorMessage }}</span><button type="button" (click)="loadWatchlist()">Retry</button>
+  </div>
+  <div class="watchlist-loading" *ngIf="isLoading && !books.length" role="status"><i class="fa-solid fa-spinner fa-spin"></i> Loading your watchlist</div>
+  <div class="watchlist-empty" *ngIf="!isLoading && !errorMessage && !books.length">
+    <i class="fa-regular fa-star"></i><h3>Your watchlist is empty</h3><p>Save books from Home and they will appear here.</p>
+  </div>
+
+  <div class="watchlist-table-wrap" *ngIf="books.length">
+    <table class="watchlist-table">
+      <thead><tr><th scope="col">Book</th><th scope="col">Author</th><th scope="col">Owner</th><th scope="col">ISBN</th><th scope="col">Rating</th><th scope="col">Watchlist</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let book of books">
+          <td><div class="watchlist-book"><span class="watchlist-book__cover"><img *ngIf="bookCover(book); else bookPlaceholder" [src]="bookCover(book)" [alt]="book.title || 'Book cover'" loading="lazy"><ng-template #bookPlaceholder><i class="fa-solid fa-book-open"></i></ng-template></span><strong>{{ book.title || 'Untitled book' }}</strong></div></td>
+          <td>{{ book.authorName || 'Not provided' }}</td>
+          <td>{{ book.owner || 'Community member' }}</td>
+          <td class="watchlist-isbn">{{ book.isbn || 'Not provided' }}</td>
+          <td><div class="watchlist-rating" [attr.aria-label]="(book.averageRating ?? book.rate ?? 0) + ' out of 5 stars'"><app-rating [rating]="book.averageRating ?? book.rate ?? 0"></app-rating><span>{{ book.averageRating ?? book.rate ?? 0 | number:'1.1-1' }}</span></div></td>
+          <td><button type="button" class="watchlist-star" [disabled]="isPending(book.id)" [attr.aria-label]="hasError(book.id) ? 'Could not update watchlist. Retry removing ' + book.title : 'Remove ' + book.title + ' from watchlist'" [title]="hasError(book.id) ? 'Could not update. Try again.' : 'Remove from watchlist'" (click)="removeFromWatchlist(book)"><i class="fa-solid fa-star" [class.fa-spin]="isPending(book.id)" aria-hidden="true"></i></button></td>
+          <td><button type="button" class="watchlist-details" (click)="showBookDetails(book)"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>Details</span></button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
