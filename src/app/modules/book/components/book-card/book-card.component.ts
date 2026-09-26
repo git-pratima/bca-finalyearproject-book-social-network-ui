@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {BookResponse} from '../../../../services/models/book-response';
+import {WatchlistService} from '../../../../services/services/watchlist.service';
 import { resolveBookCover } from '../../utils/book-cover';
 
 @Component({
@@ -12,6 +13,10 @@ export class BookCardComponent {
   private _manage = false;
   private _discover = false;
   private coverFailed = false;
+  watchlistLoading = false;
+  watchlistError = false;
+
+  constructor(private watchlistService: WatchlistService) {}
 
   get bookCover(): string | undefined {
     return this.coverFailed ? undefined : resolveBookCover(this._book);
@@ -69,5 +74,25 @@ export class BookCardComponent {
 
   onShowDetails() {
     this.details.emit(this._book);
+  }
+
+  toggleWatchlist(event: Event): void {
+    event.stopPropagation();
+    if (!this._book.id || this.watchlistLoading) {
+      return;
+    }
+
+    this.watchlistLoading = true;
+    this.watchlistError = false;
+    this.watchlistService.toggleBook(this._book.id).subscribe({
+      next: () => {
+        this._book.watchlisted = !this._book.watchlisted;
+        this.watchlistLoading = false;
+      },
+      error: () => {
+        this.watchlistError = true;
+        this.watchlistLoading = false;
+      }
+    });
   }
 }

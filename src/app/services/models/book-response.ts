@@ -19,4 +19,5 @@ export interface BookResponse {
   shareable?: boolean;
   synopsis?: string;
   title?: string;
+  watchlisted?: boolean;
 }
